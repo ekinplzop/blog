@@ -30,7 +30,7 @@ export function buildGraphData(docs: CollectionEntry<'docs'>[]): GraphData {
     return {
       id: doc.slug,
       slug: doc.slug,
-      title: doc.data.title,
+      title: doc.data.title || doc.slug.split('/').pop() || doc.slug,
       status: doc.data.lifecycle.status,
       confidence: doc.data.lifecycle.confidence,
       tags: doc.data.tags || [],

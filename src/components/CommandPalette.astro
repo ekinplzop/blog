@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 const allDocs = await getCollection('docs');
 const searchIndex = allDocs.map(doc => ({
   slug: doc.slug,
-  title: doc.data.title,
+  title: doc.data.title || doc.slug.split('/').pop() || doc.slug,
   description: doc.data.description || '',
   status: doc.data.lifecycle.status,
   confidence: doc.data.lifecycle.confidence,
