@@ -8,6 +8,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "sync": "node scripts/sync.js",
     "astro": "astro"
   },
   "dependencies": {
