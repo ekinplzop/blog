@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { status, confidence, lastVerified, supersededBy } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <div class={`my-6 p-4 rounded-xl border transition-colors ${
@@ -34,7 +35,7 @@ const { status, confidence, lastVerified, supersededBy } = Astro.props;
       <div class="w-full mt-2 pt-2 border-t border-rose-500/20 text-xs text-rose-600 dark:text-rose-400">
         <strong>认知演进注意：</strong>博主已在后续实践中修正/推翻了本文核心结论。
         {supersededBy && (
-          <a href={`/docs/${supersededBy}`} class="underline ml-1 font-semibold hover:opacity-80">
+          <a href={`${baseUrl}/docs/${supersededBy}`} class="underline ml-1 font-semibold hover:opacity-80">
             👉 点击阅读最新认知推导 →
           </a>
         )}

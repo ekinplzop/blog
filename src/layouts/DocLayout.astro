@@ -10,6 +10,7 @@ interface Props {
 
 const { entry, headings } = Astro.props;
 const { title, description, lifecycle, revisions, superseded_by, publishedDate } = entry.data;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <BaseLayout title={title} description={description}>
@@ -33,7 +34,7 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
       </nav>
 
       <div class="mt-8 pt-6 border-t border-border">
-        <a href="/" class="text-xs font-mono text-sky-500 hover:underline flex items-center gap-1">
+        <a href={`${baseUrl}/`} class="text-xs font-mono text-sky-500 hover:underline flex items-center gap-1">
           ← 返回数字花园星图
         </a>
       </div>

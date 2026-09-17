@@ -10,6 +10,8 @@ const searchIndex = allDocs.map(doc => ({
   confidence: doc.data.lifecycle.confidence,
   tags: doc.data.tags || [],
 }));
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <div
@@ -51,7 +53,7 @@ const searchIndex = allDocs.map(doc => ({
   </div>
 </div>
 
-<script is:inline define:vars={{ searchIndex }}>
+<script is:inline define:vars={{ searchIndex, baseUrl }}>
   (function () {
     const backdrop = document.getElementById('cmdk-backdrop');
     const modal = document.getElementById('cmdk-modal');
@@ -151,7 +153,7 @@ const searchIndex = allDocs.map(doc => ({
 
     function navigateTo(item) {
       if (item) {
-        window.location.href = `/docs/${item.slug}`;
+        window.location.href = `${baseUrl}/docs/${item.slug}`;
       }
     }
 
