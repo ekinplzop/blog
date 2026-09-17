@@ -1,0 +1,44 @@
+---
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  status: 'seedling' | 'in-progress' | 'evergreen' | 'superseded';
+  confidence: number;
+  lastVerified: string;
+  supersededBy?: string | null;
+}
+
+const { status, confidence, lastVerified, supersededBy } = Astro.props;
+---
+
+<div class={`my-6 p-4 rounded-xl border transition-colors ${
+  status === 'superseded' 
+    ? 'bg-rose-500/10 border-rose-500/30' 
+    : 'bg-surface border-border'
+}`}>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <StatusBadge status={status} confidence={confidence} />
+      <span class="text-xs text-muted font-mono">
+        最后验证: {lastVerified}
+      </span>
+    </div>
+
+    {status === 'seedling' && (
+      <span class="text-xs text-amber-600 dark:text-amber-400 font-sans">
+        ⚠️ 本文为初期灵感探索，结论尚未完全经过生产检验。
+      </span>
+    )}
+
+    {status === 'superseded' && (
+      <div class="w-full mt-2 pt-2 border-t border-rose-500/20 text-xs text-rose-600 dark:text-rose-400">
+        <strong>认知演进注意：</strong>博主已在后续实践中修正/推翻了本文核心结论。
+        {supersededBy && (
+          <a href={`/docs/${supersededBy}`} class="underline ml-1 font-semibold hover:opacity-80">
+            👉 点击阅读最新认知推导 →
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</div>

@@ -1,0 +1,247 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import CognitiveGraph from '../components/CognitiveGraph.astro';
+import { buildGraphData } from '../utils/graph';
+
+const allDocs = await getCollection('docs');
+const graphData = buildGraphData(allDocs);
+
+// 按认知状态分组
+const evergreen = allDocs.filter(d => d.data.lifecycle.status === 'evergreen');
+const inProgress = allDocs.filter(d => d.data.lifecycle.status === 'in-progress');
+const seedling = allDocs.filter(d => d.data.lifecycle.status === 'seedling');
+const superseded = allDocs.filter(d => d.data.lifecycle.status === 'superseded');
+
+const stats = {
+  total: allDocs.length,
+  evergreen: evergreen.length,
+  inProgress: inProgress.length,
+  seedling: seedling.length,
+};
+---
+
+<BaseLayout title="认知星图">
+  <!-- 头部 Hero 区域 -->
+  <section class="max-w-3xl mb-8">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-xs font-mono mb-4">
+      <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>
+      认知空间已上线 · 活体知识星图
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-content mb-4 font-sans">
+      构建个人的活体认知花园
+    </h1>
+    <p class="text-base sm:text-lg text-muted leading-relaxed font-sans">
+      拒绝已死文本的静态归档。这里记录的是正在演进、修正与推翻的思想状态机，所有内容均基于 Local-First 本地纯文本驱动与 0KB 纯静态离线保障。
+    </p>
+
+    <!-- 状态分布统计微指标 -->
+    <div class="grid grid-cols-3 gap-3 mt-6 p-4 rounded-xl border border-border bg-surface/50 font-mono text-xs">
+      <div>
+        <div class="text-muted text-[10px] uppercase tracking-wider">常青定论 (Evergreen)</div>
+        <div class="text-xl font-bold text-emerald-500 mt-1">{stats.evergreen}</div>
+      </div>
+      <div>
+        <div class="text-muted text-[10px] uppercase tracking-wider">实战演进 (In-Progress)</div>
+        <div class="text-xl font-bold text-sky-500 mt-1">{stats.inProgress}</div>
+      </div>
+      <div>
+        <div class="text-muted text-[10px] uppercase tracking-wider">探索萌芽 (Seedling)</div>
+        <div class="text-xl font-bold text-amber-500 mt-1">{stats.seedling}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 双模视图控制器 (Atlas 拓扑星图 ↔ Matrix 知识矩阵) -->
+  <div class="flex items-center justify-between border-b border-border pb-4 mb-6">
+    <div class="flex items-center gap-2 font-mono text-xs text-muted">
+      <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+      <span class="font-semibold text-content uppercase tracking-wider">空间探索</span>
+    </div>
+
+    <!-- 切换器控件 -->
+    <div class="inline-flex p-1 rounded-xl bg-surface border border-border text-xs font-mono">
+      <button
+        id="mode-atlas-btn"
+        class="flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-content bg-surface shadow-sm font-semibold border border-border"
+      >
+        <span>🌐 拓扑星图 (Atlas)</span>
+      </button>
+      <button
+        id="mode-matrix-btn"
+        class="flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-muted hover:text-content"
+      >
+        <span>📑 矩阵列表 (Matrix)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 视图 A：拓扑星图空间 (默认激活) -->
+  <section id="view-atlas" class="mb-12 transition-opacity duration-300">
+    <CognitiveGraph data={graphData} />
+  </section>
+
+  <!-- 视图 B：高密度矩阵列表 -->
+  <div id="view-matrix" class="space-y-12 transition-opacity duration-300">
+    <!-- In-Progress 演进中 -->
+    {inProgress.length > 0 && (
+      <section>
+        <div class="flex items-center gap-2 mb-4 border-b border-border pb-2">
+          <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+          <h2 class="text-base font-mono font-semibold text-content uppercase tracking-wider">
+            实战演进篇章 (In-Progress)
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {inProgress.map(doc => (
+            <a
+              href={`/docs/${doc.slug}`}
+              class="group p-5 rounded-xl border border-border hover:border-sky-500/50 bg-surface/30 hover:bg-surface transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
+                <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
+              </div>
+              <h3 class="text-base font-bold text-content group-hover:text-sky-400 transition-colors">
+                {doc.data.title}
+              </h3>
+              {doc.data.description && (
+                <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed">
+                  {doc.data.description}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Evergreen 成熟常青 -->
+    {evergreen.length > 0 && (
+      <section>
+        <div class="flex items-center gap-2 mb-4 border-b border-border pb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <h2 class="text-base font-mono font-semibold text-content uppercase tracking-wider">
+            成熟常青定论 (Evergreen)
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {evergreen.map(doc => (
+            <a
+              href={`/docs/${doc.slug}`}
+              class="group p-5 rounded-xl border border-border hover:border-emerald-500/50 bg-surface/30 hover:bg-surface transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
+                <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
+              </div>
+              <h3 class="text-base font-bold text-content group-hover:text-emerald-400 transition-colors">
+                {doc.data.title}
+              </h3>
+              {doc.data.description && (
+                <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed">
+                  {doc.data.description}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Seedling 萌芽与随笔 -->
+    {seedling.length > 0 && (
+      <section>
+        <div class="flex items-center gap-2 mb-4 border-b border-border pb-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <h2 class="text-base font-mono font-semibold text-content uppercase tracking-wider">
+            探索灵感草稿 (Seedling)
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {seedling.map(doc => (
+            <a
+              href={`/docs/${doc.slug}`}
+              class="group p-5 rounded-xl border border-dashed border-border hover:border-amber-500/50 bg-surface/20 hover:bg-surface transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
+                <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
+              </div>
+              <h3 class="text-base font-bold text-content group-hover:text-amber-400 transition-colors">
+                {doc.data.title}
+              </h3>
+              {doc.data.description && (
+                <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed">
+                  {doc.data.description}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Superseded 已推翻归档 -->
+    {superseded.length > 0 && (
+      <section class="opacity-75">
+        <div class="flex items-center gap-2 mb-4 border-b border-border pb-2">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          <h2 class="text-base font-mono font-semibold text-muted line-through uppercase tracking-wider">
+            已推翻/已废弃认知 (Superseded)
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {superseded.map(doc => (
+            <a
+              href={`/docs/${doc.slug}`}
+              class="group p-5 rounded-xl border border-rose-500/20 bg-rose-500/5 hover:border-rose-500/40 transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <StatusBadge status={doc.data.lifecycle.status} size="sm" />
+                <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
+              </div>
+              <h3 class="text-base font-bold text-muted line-through group-hover:text-rose-400 transition-colors">
+                {doc.data.title}
+              </h3>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+
+  <script is:inline>
+    const atlasBtn = document.getElementById('mode-atlas-btn');
+    const matrixBtn = document.getElementById('mode-matrix-btn');
+    const viewAtlas = document.getElementById('view-atlas');
+    const viewMatrix = document.getElementById('view-matrix');
+
+    function setViewMode(mode) {
+      if (mode === 'matrix') {
+        viewAtlas.classList.add('hidden');
+        viewMatrix.classList.remove('hidden');
+
+        matrixBtn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-content bg-surface shadow-sm font-semibold border border-border';
+        atlasBtn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-muted hover:text-content';
+        localStorage.setItem('garden-view-mode', 'matrix');
+      } else {
+        viewAtlas.classList.remove('hidden');
+        viewMatrix.classList.remove('hidden'); // 在 Atlas 模式下，星图在上方，下方依然保留列表，完美结合！
+
+        atlasBtn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-content bg-surface shadow-sm font-semibold border border-border';
+        matrixBtn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-muted hover:text-content';
+        localStorage.setItem('garden-view-mode', 'atlas');
+      }
+    }
+
+    if (atlasBtn && matrixBtn) {
+      atlasBtn.addEventListener('click', () => setViewMode('atlas'));
+      matrixBtn.addEventListener('click', () => setViewMode('matrix'));
+
+      const savedMode = localStorage.getItem('garden-view-mode') || 'atlas';
+      setViewMode(savedMode);
+    }
+  </script>
+</BaseLayout>

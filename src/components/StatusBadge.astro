@@ -1,0 +1,45 @@
+---
+interface Props {
+  status: 'seedling' | 'in-progress' | 'evergreen' | 'superseded';
+  confidence?: number;
+  size?: 'sm' | 'md';
+}
+
+const { status, confidence, size = 'md' } = Astro.props;
+
+const config = {
+  seedling: {
+    label: 'Seedling · 探索萌芽',
+    classes: 'border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 border-dashed',
+    dot: 'bg-amber-500 animate-pulse',
+  },
+  'in-progress': {
+    label: 'In-Progress · 实战演进',
+    classes: 'border-sky-500/40 text-sky-600 dark:text-sky-400 bg-sky-500/10',
+    dot: 'bg-sky-500',
+  },
+  evergreen: {
+    label: 'Evergreen · 成熟常青',
+    classes: 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
+    dot: 'bg-emerald-500',
+  },
+  superseded: {
+    label: 'Superseded · 认知已迭代',
+    classes: 'border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10 line-through opacity-80',
+    dot: 'bg-rose-500',
+  },
+};
+
+const current = config[status];
+const isSmall = size === 'sm';
+---
+
+<div class={`inline-flex items-center gap-1.5 border rounded-full font-mono font-medium ${current.classes} ${isSmall ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-xs'}`}>
+  <span class={`w-1.5 h-1.5 rounded-full ${current.dot}`}></span>
+  <span>{current.label}</span>
+  {confidence !== undefined && (
+    <span class="opacity-70 text-[10px] ml-1 pl-1 border-l border-current/30">
+      {Math.round(confidence * 100)}% 确信
+    </span>
+  )}
+</div>

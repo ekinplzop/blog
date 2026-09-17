@@ -1,0 +1,261 @@
+---
+interface Props {
+  initialN?: number;
+}
+
+const { initialN = 7 } = Astro.props;
+---
+
+<div class="my-8 rounded-2xl border border-sky-500/30 bg-surface/60 p-5 sm:p-6 backdrop-blur-md shadow-xl not-prose">
+  <!-- 头部说明条 -->
+  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 mb-5 font-mono text-xs">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+      <span class="font-bold text-sky-400 uppercase tracking-wider">Bret Victor 反应式推演实验室</span>
+    </div>
+    <span class="text-muted text-[11px]">按住鼠标横向拖拽数值 · 实时推演</span>
+  </div>
+
+  <!-- 核心交互控制器与参数区 -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+    <!-- 左侧：参数与公式计算 (7列) -->
+    <div class="md:col-span-7 space-y-4">
+      <div class="p-4 rounded-xl border border-border bg-surface/80">
+        <div class="text-xs text-muted font-mono mb-1">调整集群规模节点数 (物理质点 N)</div>
+        
+        <!-- 可横向拖拽的行内数值 -->
+        <div class="flex items-center gap-4">
+          <div
+            id="scrub-target"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-dashed border-sky-500/60 bg-sky-500/10 text-sky-400 font-mono text-lg font-bold cursor-ew-resize select-none hover:bg-sky-500/20 transition-colors"
+            title="按住鼠标左键向左/右拖拽调整数值"
+          >
+            <span>N = </span>
+            <span id="display-n" class="underline underline-offset-4 decoration-sky-400">{initialN}</span>
+            <span class="text-xs text-sky-400/70">⟷ 拖动</span>
+          </div>
+
+          <!-- 滑块备选控制 -->
+          <input
+            id="slider-n"
+            type="range"
+            min="4"
+            max="25"
+            value={initialN}
+            class="flex-1 accent-sky-500 cursor-pointer h-1.5 bg-surface rounded-lg border border-border"
+          />
+        </div>
+      </div>
+
+      <!-- 数学公式联动输出卡片 -->
+      <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+        <div class="p-3 rounded-xl border border-border bg-surface/40">
+          <div class="text-muted text-[10px] uppercase">最大容错上限 (F)</div>
+          <div class="text-lg font-bold text-rose-500 mt-1 flex items-baseline gap-1">
+            <span id="display-f">2</span>
+            <span class="text-[10px] text-muted font-normal font-sans">个拜占庭叛徒</span>
+          </div>
+          <div class="text-[10px] text-muted/80 mt-1">
+            $$ F = \lfloor (N - 1) / 3 \rfloor $$
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl border border-border bg-surface/40">
+          <div class="text-muted text-[10px] uppercase">法定多数门槛 (Quorum)</div>
+          <div class="text-lg font-bold text-emerald-400 mt-1 flex items-baseline gap-1">
+            <span id="display-q">5</span>
+            <span class="text-[10px] text-muted font-normal font-sans">票最低票数</span>
+          </div>
+          <div class="text-[10px] text-muted/80 mt-1">
+            $$ Q = 2F + 1 $$
+          </div>
+        </div>
+      </div>
+
+      <!-- 当前系统稳定性判据 -->
+      <div id="status-card" class="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs font-mono text-emerald-400 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="status-indicator" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span id="status-text">集群状态：安全收敛 (拜占庭防线牢固)</span>
+        </div>
+        <span id="display-ratio" class="text-[11px] opacity-80">容错率: 28.6%</span>
+      </div>
+    </div>
+
+    <!-- 右侧：动态 SVG 集群拓扑环形状态机 (5列) -->
+    <div class="md:col-span-5 flex flex-col items-center justify-center p-2 rounded-xl border border-border bg-surface/30">
+      <div class="text-[11px] font-mono text-muted mb-2 flex items-center justify-between w-full px-2">
+        <span>全连接拓扑模拟</span>
+        <div class="flex items-center gap-2 text-[10px]">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-400"></span>诚实</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span>叛徒</span>
+        </div>
+      </div>
+
+      <!-- SVG 画布 -->
+      <svg id="topo-svg" viewBox="0 0 240 240" class="w-48 h-48 sm:w-56 sm:h-56 select-none"></svg>
+
+      <div class="text-[10px] font-mono text-muted/70 mt-2 text-center">
+        点线随 $N$ 实时重绘 · 互联通信信道
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const scrub = document.getElementById('scrub-target');
+    const slider = document.getElementById('slider-n');
+    const displayN = document.getElementById('display-n');
+    const displayF = document.getElementById('display-f');
+    const displayQ = document.getElementById('display-q');
+    const displayRatio = document.getElementById('display-ratio');
+    const statusCard = document.getElementById('status-card');
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusText = document.getElementById('status-text');
+    const svg = document.getElementById('topo-svg');
+
+    if (!scrub || !slider || !displayN || !displayF || !displayQ || !svg) return;
+
+    let currentN = parseInt(slider.value, 10) || 7;
+    let isDragging = false;
+    let startX = 0;
+    let startVal = currentN;
+
+    function calculate(N) {
+      const F = Math.floor((N - 1) / 3);
+      const Q = 2 * F + 1;
+      const ratio = ((F / N) * 100).toFixed(1);
+
+      displayN.textContent = N;
+      displayF.textContent = F;
+      displayQ.textContent = Q;
+      displayRatio.textContent = `容错率: ${ratio}%`;
+      slider.value = N;
+
+      // 状态机预警判定
+      if (F === 0) {
+        statusCard.className = 'p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-xs font-mono text-amber-400 flex items-center justify-between';
+        statusIndicator.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        statusText.textContent = '集群状态：脆弱 (任何单点宕机将失序)';
+      } else {
+        statusCard.className = 'p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs font-mono text-emerald-400 flex items-center justify-between';
+        statusIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        statusText.textContent = `集群状态：高可靠 (容忍 ${F} 节点叛变)`;
+      }
+
+      renderTopo(N, F);
+    }
+
+    // 渲染环形全连接 SVG 拓扑
+    function renderTopo(N, F) {
+      const cx = 120;
+      const cy = 120;
+      const r = 85;
+      const nodeRadius = Math.max(6, Math.min(10, 120 / N));
+
+      // 坐标计算
+      const nodes = [];
+      for (let i = 0; i < N; i++) {
+        const angle = (i / N) * Math.PI * 2 - Math.PI / 2;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        const isFaulty = i < F; // 前 F 个节点设为叛徒节点
+        nodes.push({ x, y, isFaulty, id: i });
+      }
+
+      // 生成内部连接信道 (为防止线条过多，只连部分拓扑弦)
+      let linesHtml = '';
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const isCrossFault = a.isFaulty || b.isFaulty;
+          const stroke = isCrossFault ? 'rgba(244, 63, 94, 0.15)' : 'rgba(56, 189, 248, 0.15)';
+          linesHtml += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${stroke}" stroke-width="0.8" />`;
+        }
+      }
+
+      // 生成节点圆点
+      let nodesHtml = '';
+      nodes.forEach((n) => {
+        const fill = n.isFaulty ? '#f43f5e' : '#0284c7';
+        const stroke = n.isFaulty ? '#ffe4e6' : '#e0f2fe';
+        const pulse = n.isFaulty ? 'animate-pulse' : '';
+        nodesHtml += `
+          <g class="${pulse}">
+            <circle cx="${n.x}" cy="${n.y}" r="${nodeRadius + 2}" fill="${fill}" opacity="0.25" />
+            <circle cx="${n.x}" cy="${n.y}" r="${nodeRadius}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" />
+          </g>
+        `;
+      });
+
+      svg.innerHTML = linesHtml + nodesHtml;
+    }
+
+    // 滑块事件
+    slider.addEventListener('input', (e) => {
+      currentN = parseInt(e.target.value, 10);
+      calculate(currentN);
+    });
+
+    // 行内数字按住拖拽手势 (Scrubbable Interaction)
+    scrub.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startVal = currentN;
+      document.body.style.cursor = 'ew-resize';
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      // 每横向滑动 12px 改变 1 个数值
+      const step = Math.round(dx / 12);
+      let nextN = startVal + step;
+      nextN = Math.max(4, Math.min(25, nextN));
+
+      if (nextN !== currentN) {
+        currentN = nextN;
+        calculate(currentN);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        document.body.style.cursor = '';
+      }
+    });
+
+    // 移动端 Touch 滑动支持
+    scrub.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startVal = currentN;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - startX;
+      const step = Math.round(dx / 14);
+      let nextN = startVal + step;
+      nextN = Math.max(4, Math.min(25, nextN));
+
+      if (nextN !== currentN) {
+        currentN = nextN;
+        calculate(currentN);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // 初始化首次绘制
+    calculate(currentN);
+  })();
+</script>

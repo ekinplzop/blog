@@ -1,0 +1,215 @@
+---
+import { getCollection } from 'astro:content';
+
+const allDocs = await getCollection('docs');
+const searchIndex = allDocs.map(doc => ({
+  slug: doc.slug,
+  title: doc.data.title,
+  description: doc.data.description || '',
+  status: doc.data.lifecycle.status,
+  confidence: doc.data.lifecycle.confidence,
+  tags: doc.data.tags || [],
+}));
+---
+
+<div
+  id="cmdk-backdrop"
+  class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center p-4 pt-16 sm:pt-24 opacity-0 pointer-events-none transition-opacity duration-200"
+>
+  <div
+    id="cmdk-modal"
+    class="w-full max-w-xl rounded-2xl bg-surface border border-border shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200"
+  >
+    <!-- 输入框 -->
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-border">
+      <svg class="w-4 h-4 text-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        id="cmdk-input"
+        type="text"
+        placeholder="搜索文章、认知状态 (如 status:evergreen)、标签..."
+        class="w-full bg-transparent text-sm text-content placeholder:text-muted outline-none font-sans"
+        autocomplete="off"
+      />
+      <span class="text-[10px] font-mono text-muted bg-surface/80 border border-border px-1.5 py-0.5 rounded">
+        ESC 退出
+      </span>
+    </div>
+
+    <!-- 结果列表 -->
+    <div id="cmdk-results" class="max-h-80 overflow-y-auto p-2 space-y-1"></div>
+
+    <!-- 底部状态指示 -->
+    <div class="px-4 py-2 border-t border-border bg-surface/50 text-[11px] font-mono text-muted flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span><kbd class="px-1 py-0.5 bg-surface border border-border rounded text-[10px]">↑</kbd> <kbd class="px-1 py-0.5 bg-surface border border-border rounded text-[10px]">↓</kbd> 导航</span>
+        <span><kbd class="px-1 py-0.5 bg-surface border border-border rounded text-[10px]">↵</kbd> 选择</span>
+      </div>
+      <span class="text-sky-500">Cognitive Search</span>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ searchIndex }}>
+  (function () {
+    const backdrop = document.getElementById('cmdk-backdrop');
+    const modal = document.getElementById('cmdk-modal');
+    const input = document.getElementById('cmdk-input');
+    const resultsContainer = document.getElementById('cmdk-results');
+
+    if (!backdrop || !modal || !input || !resultsContainer) return;
+
+    let isOpen = false;
+    let selectedIndex = 0;
+    let filteredList = [];
+
+    const statusMap = {
+      evergreen: { label: 'Evergreen', class: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+      'in-progress': { label: 'In-Progress', class: 'text-sky-400 bg-sky-500/10 border-sky-500/30' },
+      seedling: { label: 'Seedling', class: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
+      superseded: { label: 'Superseded', class: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
+    };
+
+    function openCmdK() {
+      isOpen = true;
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      backdrop.classList.add('opacity-100', 'pointer-events-auto');
+      modal.classList.remove('scale-95');
+      modal.classList.add('scale-100');
+      input.value = '';
+      selectedIndex = 0;
+      renderResults('');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeCmdK() {
+      isOpen = false;
+      backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      modal.classList.remove('scale-100');
+      modal.classList.add('scale-95');
+    }
+
+    function renderResults(query) {
+      const q = query.trim().toLowerCase();
+      filteredList = searchIndex.filter(item => {
+        if (!q) return true;
+        if (q.startsWith('status:')) {
+          const targetStatus = q.replace('status:', '').trim();
+          return item.status.toLowerCase().includes(targetStatus);
+        }
+        return (
+          item.title.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          item.tags.some(t => t.toLowerCase().includes(q))
+        );
+      });
+
+      if (filteredList.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="py-8 text-center text-xs font-mono text-muted">
+            未发现与 "${query}" 匹配的知识节点
+          </div>
+        `;
+        return;
+      }
+
+      if (selectedIndex >= filteredList.length) selectedIndex = 0;
+
+      resultsContainer.innerHTML = filteredList.map((item, idx) => {
+        const isSelected = idx === selectedIndex;
+        const st = statusMap[item.status] || statusMap['in-progress'];
+        return `
+          <div
+            data-index="${idx}"
+            class="cmdk-item flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${
+              isSelected ? 'bg-sky-500/15 border border-sky-500/30 text-content' : 'hover:bg-surface/60 text-content/80'
+            }"
+          >
+            <div class="flex-1 min-w-0 pr-3">
+              <div class="text-sm font-semibold truncate font-sans">${item.title}</div>
+              <div class="text-[11px] text-muted truncate mt-0.5 font-sans">${item.description || '无附加描述'}</div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono border ${st.class}">
+                ${st.label}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 绑定点击事件
+      resultsContainer.querySelectorAll('.cmdk-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const idx = parseInt(el.getAttribute('data-index') || '0', 10);
+          navigateTo(filteredList[idx]);
+        });
+      });
+    }
+
+    function navigateTo(item) {
+      if (item) {
+        window.location.href = `/docs/${item.slug}`;
+      }
+    }
+
+    input.addEventListener('input', (e) => {
+      selectedIndex = 0;
+      renderResults(e.target.value);
+    });
+
+    window.addEventListener('keydown', (e) => {
+      // 快捷键唤出
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (isOpen) closeCmdK();
+        else openCmdK();
+        return;
+      }
+
+      if (!isOpen) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeCmdK();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (filteredList.length > 0) {
+          selectedIndex = (selectedIndex + 1) % filteredList.length;
+          renderResults(input.value);
+          ensureVisible();
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (filteredList.length > 0) {
+          selectedIndex = (selectedIndex - 1 + filteredList.length) % filteredList.length;
+          renderResults(input.value);
+          ensureVisible();
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (filteredList[selectedIndex]) {
+          navigateTo(filteredList[selectedIndex]);
+        }
+      }
+    });
+
+    function ensureVisible() {
+      const active = resultsContainer.querySelector(`[data-index="${selectedIndex}"]`);
+      if (active) {
+        active.scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) {
+        closeCmdK();
+      }
+    });
+
+    // 暴露给外部按钮呼出
+    window.openCommandPalette = openCmdK;
+  })();
+</script>

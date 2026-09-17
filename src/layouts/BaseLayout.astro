@@ -1,0 +1,114 @@
+---
+import '../styles/global.css';
+import CommandPalette from '../components/CommandPalette.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Cognitive Kernel - 个人认知演进与活体数字花园' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <title>{title} | Cognitive Kernel</title>
+    <!-- 防闪烁暗黑模式脚本 -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+      if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col selection:bg-sky-500/20 selection:text-sky-400">
+    <!-- 顶部极简导航栏 -->
+    <header class="sticky top-0 z-40 w-full border-b border-border bg-surface/80 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <a href="/" class="flex items-center gap-2 group">
+            <span class="w-2 h-2 rounded-full bg-sky-500 group-hover:scale-125 transition-transform"></span>
+            <span class="font-mono font-bold tracking-tight text-content text-sm">
+              COGNITIVE<span class="text-sky-500">.KERNEL</span>
+            </span>
+          </a>
+          <nav class="hidden md:flex items-center gap-4 text-xs font-mono text-muted">
+            <a href="/" class="hover:text-content transition-colors">/ 首页图谱</a>
+            <a href="/docs/consensus-decay" class="hover:text-content transition-colors">/ 示例长文</a>
+          </nav>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- ⌘K 搜索按钮 -->
+          <button
+            onclick="window.openCommandPalette && window.openCommandPalette()"
+            class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface/50 text-muted hover:text-content text-xs font-mono transition-colors"
+            title="快捷键 Ctrl+K 或 Cmd+K"
+          >
+            <span>⌘K 检索</span>
+            <kbd class="text-[10px] bg-surface px-1 py-0.5 rounded border border-border text-muted">Ctrl+K</kbd>
+          </button>
+
+          <!-- 主题切换按钮 -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-lg border border-border text-muted hover:text-content hover:bg-surface transition-colors"
+            title="切换暗黑/浅色模式"
+          >
+            <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主视图容器 -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <slot />
+    </main>
+
+    <!-- 极简页脚 -->
+    <footer class="border-t border-border mt-auto py-8 text-center text-xs text-muted font-mono">
+      <div class="max-w-7xl mx-auto px-4">
+        Cognitive Kernel · Local-First 活体认知花园 · 0KB 纯静态离线保障
+      </div>
+    </footer>
+
+    <script is:inline>
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const isDark = document.documentElement.classList.contains('dark');
+          if (isDark) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          }
+        });
+      }
+    </script>
+    <!-- ⌘K 命令控制面板 -->
+    <CommandPalette />
+  </body>
+</html>

@@ -1,0 +1,182 @@
+---
+interface Props {
+  revisions: Array<{
+    date: string;
+    commit?: string;
+    summary: string;
+  }>;
+}
+
+const { revisions = [] } = Astro.props;
+---
+
+{revisions && revisions.length > 0 && (
+  <div class="my-6 rounded-2xl border border-sky-500/30 bg-surface/70 p-4 backdrop-blur-md shadow-lg not-prose transition-all">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/80 pb-3 mb-3">
+      <!-- 标题指示 -->
+      <div class="flex items-center gap-2 font-mono text-xs">
+        <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+        <span class="font-bold text-content tracking-tight uppercase">Cognitive Time-Machine · 思想演进时光机</span>
+      </div>
+
+      <!-- 版本模式切换胶囊 -->
+      <div class="inline-flex p-1 rounded-xl bg-surface border border-border text-xs font-mono">
+        <button
+          id="tm-btn-v1"
+          class="px-2.5 py-1 rounded-lg text-muted hover:text-content transition-all"
+          title="回退至 2024 年初代初始假设"
+        >
+          2024 初始假设
+        </button>
+        <button
+          id="tm-btn-diff"
+          class="px-2.5 py-1 rounded-lg text-muted hover:text-content transition-all"
+          title="开启演进对比：高亮展示推翻过程"
+        >
+          ⚡ 演进对比 (Diff)
+        </button>
+        <button
+          id="tm-btn-v2"
+          class="px-2.5 py-1 rounded-lg text-sky-400 bg-sky-500/15 border border-sky-500/30 font-semibold shadow-sm transition-all"
+          title="当前最新修正版本"
+        >
+          2025 最新定论
+        </button>
+      </div>
+    </div>
+
+    <!-- 底部状态与 Commit 摘要 -->
+    <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+      <div id="tm-summary-text" class="text-muted truncate max-w-lg">
+        当前模式: <span class="text-sky-400 font-medium">2025 最新定论</span> · 包含半同步模型修正
+      </div>
+      <div id="tm-commit-tag" class="text-[11px] px-2 py-0.5 rounded bg-surface border border-border text-muted">
+        Commit: c3e90b
+      </div>
+    </div>
+  </div>
+)}
+
+<script is:inline>
+  (function () {
+    const btnV1 = document.getElementById('tm-btn-v1');
+    const btnDiff = document.getElementById('tm-btn-diff');
+    const btnV2 = document.getElementById('tm-btn-v2');
+    const summaryText = document.getElementById('tm-summary-text');
+    const commitTag = document.getElementById('tm-commit-tag');
+    const article = document.querySelector('article');
+
+    if (!btnV1 || !btnDiff || !btnV2 || !article) return;
+
+    function setMode(mode) {
+      // 样式重置
+      const defaultClass = 'px-2.5 py-1 rounded-lg text-muted hover:text-content transition-all';
+      const activeClass = 'px-2.5 py-1 rounded-lg text-sky-400 bg-sky-500/15 border border-sky-500/30 font-semibold shadow-sm transition-all';
+
+      btnV1.className = defaultClass;
+      btnDiff.className = defaultClass;
+      btnV2.className = defaultClass;
+
+      article.setAttribute('data-time-mode', mode);
+
+      if (mode === 'v1') {
+        btnV1.className = activeClass;
+        if (summaryText) {
+          summaryText.innerHTML = '当前模式: <span class="text-amber-500 font-medium">2024 初代假设</span> · 假定理想强同步时钟域';
+        }
+        if (commitTag) commitTag.textContent = 'Commit: 8f1a2d';
+      } else if (mode === 'diff') {
+        btnDiff.className = activeClass;
+        if (summaryText) {
+          summaryText.innerHTML = '当前模式: <span class="text-rose-400 font-medium">思维演进 Diff</span> · <span class="text-rose-500">-红色被推翻</span> 与 <span class="text-emerald-400">+绿色新定理</span> 原地对比';
+        }
+        if (commitTag) commitTag.textContent = 'Diff: 8f1a2d...c3e90b';
+      } else {
+        btnV2.className = activeClass;
+        if (summaryText) {
+          summaryText.innerHTML = '当前模式: <span class="text-sky-400 font-medium">2025 最新定论</span> · 经受实践检验的半同步模型';
+        }
+        if (commitTag) commitTag.textContent = 'Commit: c3e90b';
+      }
+    }
+
+    btnV1.addEventListener('click', () => setMode('v1'));
+    btnDiff.addEventListener('click', () => setMode('diff'));
+    btnV2.addEventListener('click', () => setMode('v2'));
+
+    // 默认设置为 v2
+    setMode('v2');
+  })();
+</script>
+
+<style is:global>
+  /* 演进 Diff 块的核心动画与显隐逻辑 */
+  .evolution-diff-block {
+    margin: 1.5rem 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  /* 默认 v2 模式：仅展示最新成果，隐去旧假设与 Diff 标记 */
+  [data-time-mode="v2"] .diff-removed {
+    display: none !important;
+  }
+  [data-time-mode="v2"] .diff-added {
+    display: block;
+    border-left: 3px solid #0284c7;
+    padding-left: 1rem;
+    background: transparent;
+  }
+
+  /* v1 模式：仅展示初代假设 */
+  [data-time-mode="v1"] .diff-removed {
+    display: block !important;
+    border-left: 3px solid #f59e0b;
+    padding-left: 1rem;
+    background: rgba(245, 158, 11, 0.05);
+  }
+  [data-time-mode="v1"] .diff-added {
+    display: none !important;
+  }
+
+  /* diff 模式：像 GitHub PR 一样高亮对比被推翻与新提出的观点 */
+  [data-time-mode="diff"] .diff-removed {
+    display: block !important;
+    position: relative;
+    padding: 0.85rem 1rem 0.85rem 2.5rem;
+    background: rgba(244, 63, 94, 0.08);
+    border-left: 3px solid #f43f5e;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    text-decoration: line-through;
+    opacity: 0.75;
+  }
+  [data-time-mode="diff"] .diff-removed::before {
+    content: "−";
+    position: absolute;
+    left: 1rem;
+    top: 0.85rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: #f43f5e;
+  }
+
+  [data-time-mode="diff"] .diff-added {
+    display: block !important;
+    position: relative;
+    padding: 0.85rem 1rem 0.85rem 2.5rem;
+    background: rgba(16, 185, 129, 0.08);
+    border-left: 3px solid #10b981;
+    border-radius: 0.5rem;
+  }
+  [data-time-mode="diff"] .diff-added::before {
+    content: "+";
+    position: absolute;
+    left: 1rem;
+    top: 0.85rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: #10b981;
+  }
+</style>

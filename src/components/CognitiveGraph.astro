@@ -1,0 +1,544 @@
+---
+import type { GraphData } from '../utils/graph';
+
+interface Props {
+  data: GraphData;
+}
+
+const { data } = Astro.props;
+---
+
+<div class="relative w-full rounded-2xl border border-border bg-surface/40 overflow-hidden backdrop-blur-sm group">
+  <!-- 顶部科技微标与控制栏 -->
+  <div class="absolute top-3 left-3 z-10 flex items-center gap-2 pointer-events-none">
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 border border-border text-[11px] font-mono text-muted backdrop-blur-md">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="graph-status-dot"></span>
+      <span id="graph-status-text">动力学生成中...</span>
+    </div>
+    <span class="hidden sm:inline-block text-[11px] font-mono text-muted/70 bg-surface/60 px-2 py-0.5 rounded border border-border/50">
+      滚轮/拖拽探索 · 点击聚焦
+    </span>
+  </div>
+
+  <div class="absolute top-3 right-3 z-10 flex items-center gap-2">
+    <button
+      id="graph-reset-btn"
+      class="px-2.5 py-1 text-[11px] font-mono rounded-lg bg-surface/80 border border-border hover:border-sky-500/60 text-muted hover:text-content backdrop-blur-md transition-all active:scale-95"
+      title="重新施加扰动与布局"
+    >
+      ↺ 重新分布
+    </button>
+  </div>
+
+  <!-- 节点详情悬浮卡片 (聚焦时滑出) -->
+  <div
+    id="graph-node-popover"
+    class="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm z-20 p-4 rounded-xl bg-surface/95 border border-border shadow-2xl backdrop-blur-xl transition-all duration-300 transform translate-y-8 opacity-0 pointer-events-none"
+  >
+    <div class="flex items-start justify-between gap-2 mb-2">
+      <span id="popover-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border"></span>
+      <button id="popover-close-btn" class="text-muted hover:text-content text-xs p-1">✕</button>
+    </div>
+    <h4 id="popover-title" class="text-sm font-bold text-content leading-snug mb-1.5 font-sans"></h4>
+    <div id="popover-tags" class="flex flex-wrap gap-1 mb-3"></div>
+    <a
+      id="popover-link"
+      href="#"
+      class="inline-flex items-center justify-center w-full py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-mono text-xs font-semibold transition-colors shadow-sm"
+    >
+      进入深度阅读 →
+    </a>
+  </div>
+
+  <!-- 主绘图 Canvas -->
+  <canvas
+    id="cognitive-canvas"
+    class="w-full h-[360px] sm:h-[440px] cursor-grab active:cursor-grabbing block"
+  ></canvas>
+</div>
+
+<script is:inline define:vars={{ graphData: data }}>
+  (function () {
+    const canvas = document.getElementById('cognitive-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const statusDot = document.getElementById('graph-status-dot');
+    const statusText = document.getElementById('graph-status-text');
+    const resetBtn = document.getElementById('graph-reset-btn');
+    const popover = document.getElementById('graph-node-popover');
+    const popoverTitle = document.getElementById('popover-title');
+    const popoverBadge = document.getElementById('popover-status-badge');
+    const popoverTags = document.getElementById('popover-tags');
+    const popoverLink = document.getElementById('popover-link');
+    const popoverClose = document.getElementById('popover-close-btn');
+
+    let width = 0;
+    let height = 0;
+    let dpr = window.devicePixelRatio || 1;
+    let animationFrameId = null;
+    let isSleeping = false;
+    let sleepCounter = 0;
+    let isVisible = true;
+
+    // 颜色配置
+    const colors = {
+      evergreen: {
+        fill: '#10b981',
+        glow: 'rgba(16, 185, 129, 0.25)',
+        label: 'Evergreen · 常青',
+        badge: 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10',
+      },
+      'in-progress': {
+        fill: '#0284c7',
+        glow: 'rgba(2, 132, 199, 0.25)',
+        label: 'In-Progress · 演进',
+        badge: 'border-sky-500/40 text-sky-400 bg-sky-500/10',
+      },
+      seedling: {
+        fill: '#f59e0b',
+        glow: 'rgba(245, 158, 11, 0.25)',
+        label: 'Seedling · 萌芽',
+        badge: 'border-amber-500/40 text-amber-400 bg-amber-500/10',
+      },
+      superseded: {
+        fill: '#f43f5e',
+        glow: 'rgba(244, 63, 94, 0.25)',
+        label: 'Superseded · 已废弃',
+        badge: 'border-rose-500/40 text-rose-400 bg-rose-500/10',
+      },
+    };
+
+    // 物理质点初始化
+    function initPhysics() {
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+
+      const nodes = graphData.nodes.map((n, i) => {
+        const angle = (i / graphData.nodes.length) * Math.PI * 2;
+        const radius = Math.min(width, height) * 0.28;
+        return {
+          ...n,
+          x: width / 2 + Math.cos(angle) * radius + (Math.random() - 0.5) * 40,
+          y: height / 2 + Math.sin(angle) * radius + (Math.random() - 0.5) * 40,
+          vx: 0,
+          vy: 0,
+          isDragging: false,
+        };
+      });
+
+      return nodes;
+    }
+
+    let nodes = initPhysics();
+    let hoveredNode = null;
+    let selectedNode = null;
+    let draggedNode = null;
+
+    // 重新排列
+    function restartPhysics() {
+      wakeUp();
+      nodes.forEach((n) => {
+        n.vx = (Math.random() - 0.5) * 12;
+        n.vy = (Math.random() - 0.5) * 12;
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        restartPhysics();
+      });
+    }
+
+    // 唤醒引擎
+    function wakeUp() {
+      isSleeping = false;
+      sleepCounter = 0;
+      if (statusDot) {
+        statusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+      }
+      if (statusText) {
+        statusText.textContent = '物理动力学运行中';
+      }
+      if (!animationFrameId && isVisible) {
+        tick();
+      }
+    }
+
+    // 物理步进
+    function updatePhysics() {
+      let maxVelocity = 0;
+      const kCoulomb = 1800; // 斥力系数
+      const kSpring = 0.045; // 弹簧系数
+      const kCenter = 0.015; // 中心回缩力
+      const damping = 0.88; // 阻尼衰减
+
+      // 1. 节点间排斥力 (库仑力)
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.hypot(dx, dy) || 1;
+
+          if (dist < 320) {
+            const force = kCoulomb / (dist * dist);
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+
+            if (!a.isDragging) {
+              a.vx -= fx;
+              a.vy -= fy;
+            }
+            if (!b.isDragging) {
+              b.vx += fx;
+              b.vy += fy;
+            }
+          }
+        }
+      }
+
+      // 2. 边线弹簧力 (胡克定律)
+      graphData.links.forEach((link) => {
+        const a = nodes.find((n) => n.id === link.source);
+        const b = nodes.find((n) => n.id === link.target);
+        if (!a || !b) return;
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const targetDist = link.type === 'supersede' ? 140 : 120;
+        const force = (dist - targetDist) * kSpring;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+
+        if (!a.isDragging) {
+          a.vx += fx;
+          a.vy += fy;
+        }
+        if (!b.isDragging) {
+          b.vx -= fx;
+          b.vy -= fy;
+        }
+      });
+
+      // 3. 向心力与位置更新
+      const cx = width / 2;
+      const cy = height / 2;
+
+      nodes.forEach((n) => {
+        if (!n.isDragging) {
+          n.vx += (cx - n.x) * kCenter;
+          n.vy += (cy - n.y) * kCenter;
+
+          n.vx *= damping;
+          n.vy *= damping;
+
+          n.x += n.vx;
+          n.y += n.vy;
+
+          // 边界碰撞柔和约束
+          const pad = n.radius + 15;
+          n.x = Math.max(pad, Math.min(width - pad, n.x));
+          n.y = Math.max(pad, Math.min(height - pad, n.y));
+
+          const v = Math.hypot(n.vx, n.vy);
+          if (v > maxVelocity) maxVelocity = v;
+        }
+      });
+
+      // 能量极小值自动休眠判定 (5秒内平稳停转，CPU 占用降为 0)
+      if (maxVelocity < 0.08 && !draggedNode) {
+        sleepCounter++;
+        if (sleepCounter > 45) {
+          isSleeping = true;
+          if (statusDot) {
+            statusDot.className = 'w-2 h-2 rounded-full bg-zinc-500';
+          }
+          if (statusText) {
+            statusText.textContent = '● 拓扑已收敛待机 (0% CPU)';
+          }
+        }
+      } else {
+        sleepCounter = 0;
+      }
+    }
+
+    // 绘制主流程
+    function draw() {
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#f3f4f6' : '#111827';
+      const linkBaseColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)';
+
+      // 1. 绘制连线
+      graphData.links.forEach((link) => {
+        const a = nodes.find((n) => n.id === link.source);
+        const b = nodes.find((n) => n.id === link.target);
+        if (!a || !b) return;
+
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+
+        const isRelated =
+          hoveredNode && (hoveredNode.id === a.id || hoveredNode.id === b.id);
+
+        if (link.type === 'supersede') {
+          // 推翻认知关系：红色定向虚线
+          ctx.strokeStyle = isRelated ? '#f43f5e' : 'rgba(244, 63, 94, 0.45)';
+          ctx.lineWidth = isRelated ? 2.5 : 1.5;
+          ctx.setLineDash([5, 4]);
+        } else {
+          // 普通共现关系：实线
+          ctx.strokeStyle = isRelated ? '#0284c7' : linkBaseColor;
+          ctx.lineWidth = isRelated ? 2 : 1;
+          ctx.setLineDash([]);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      // 2. 绘制节点
+      nodes.forEach((n) => {
+        const c = colors[n.status] || colors['in-progress'];
+        const isHovered = hoveredNode && hoveredNode.id === n.id;
+        const isSelected = selectedNode && selectedNode.id === n.id;
+
+        // 连通高亮逻辑
+        let alpha = 1;
+        if (hoveredNode) {
+          const isConnected =
+            hoveredNode.id === n.id ||
+            graphData.links.some(
+              (l) =>
+                (l.source === hoveredNode.id && l.target === n.id) ||
+                (l.target === hoveredNode.id && l.source === n.id)
+            );
+          alpha = isConnected ? 1 : 0.2;
+        }
+
+        ctx.globalAlpha = alpha;
+
+        // 外层呼吸光晕
+        if (isHovered || isSelected || n.status === 'evergreen') {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius + (isHovered ? 8 : 4), 0, Math.PI * 2);
+          ctx.fillStyle = c.glow;
+          ctx.fill();
+        }
+
+        // 节点实体
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+        ctx.fillStyle = c.fill;
+        ctx.fill();
+
+        // 边框描边
+        ctx.lineWidth = isHovered ? 2.5 : 1.5;
+        ctx.strokeStyle = isDark ? '#18181b' : '#ffffff';
+        ctx.stroke();
+
+        // 文字标签
+        ctx.font = '500 11px Inter, sans-serif';
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.fillText(n.title, n.x, n.y + n.radius + 15);
+
+        // 置信度微标记
+        ctx.font = '400 9px monospace';
+        ctx.fillStyle = isDark ? '#9ca3af' : '#6b7280';
+        ctx.fillText(`${Math.round(n.confidence * 100)}%`, n.x, n.y + n.radius + 26);
+      });
+
+      ctx.restore();
+    }
+
+    // 循环帧
+    function tick() {
+      if (!isVisible) {
+        animationFrameId = null;
+        return;
+      }
+
+      updatePhysics();
+      draw();
+
+      if (!isSleeping) {
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        animationFrameId = null;
+      }
+    }
+
+    // 鼠标手势与交互处理
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const { x, y } = getCanvasCoords(e);
+
+      if (draggedNode) {
+        draggedNode.x = x;
+        draggedNode.y = y;
+        draggedNode.vx = 0;
+        draggedNode.vy = 0;
+        wakeUp();
+        return;
+      }
+
+      // 悬停检测
+      const hit = nodes.find((n) => Math.hypot(n.x - x, n.y - y) <= n.radius + 6);
+      if (hit !== hoveredNode) {
+        hoveredNode = hit;
+        canvas.style.cursor = hit ? 'pointer' : 'grab';
+        wakeUp();
+      }
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      const { x, y } = getCanvasCoords(e);
+      const hit = nodes.find((n) => Math.hypot(n.x - x, n.y - y) <= n.radius + 6);
+
+      if (hit) {
+        draggedNode = hit;
+        hit.isDragging = true;
+        selectedNode = hit;
+        showPopover(hit);
+        wakeUp();
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (draggedNode) {
+        draggedNode.isDragging = false;
+        draggedNode = null;
+        wakeUp();
+      }
+    });
+
+    // 移动端 Touch 支持
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        const hit = nodes.find((n) => Math.hypot(n.x - x, n.y - y) <= n.radius + 10);
+        if (hit) {
+          draggedNode = hit;
+          hit.isDragging = true;
+          selectedNode = hit;
+          showPopover(hit);
+          wakeUp();
+        }
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (draggedNode && e.touches.length === 1) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        draggedNode.x = touch.clientX - rect.left;
+        draggedNode.y = touch.clientY - rect.top;
+        draggedNode.vx = 0;
+        draggedNode.vy = 0;
+        wakeUp();
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', () => {
+      if (draggedNode) {
+        draggedNode.isDragging = false;
+        draggedNode = null;
+        wakeUp();
+      }
+    });
+
+    // 展现卡片
+    function showPopover(node) {
+      if (!popover || !popoverTitle || !popoverBadge || !popoverTags || !popoverLink) return;
+
+      const c = colors[node.status] || colors['in-progress'];
+      popoverTitle.textContent = node.title;
+      popoverBadge.textContent = `${c.label} · ${Math.round(node.confidence * 100)}% 确信`;
+      popoverBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border ${c.badge}`;
+
+      popoverTags.innerHTML = '';
+      node.tags.forEach((t) => {
+        const span = document.createElement('span');
+        span.className = 'text-[10px] font-mono bg-surface border border-border px-1.5 py-0.5 rounded text-muted';
+        span.textContent = `#${t}`;
+        popoverTags.appendChild(span);
+      });
+
+      popoverLink.href = `/docs/${node.slug}`;
+
+      popover.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+      popover.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+
+    function hidePopover() {
+      if (!popover) return;
+      popover.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      popover.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+      selectedNode = null;
+    }
+
+    if (popoverClose) {
+      popoverClose.addEventListener('click', hidePopover);
+    }
+
+    // 双击直接穿梭
+    canvas.addEventListener('dblclick', () => {
+      if (hoveredNode) {
+        window.location.href = `/docs/${hoveredNode.slug}`;
+      }
+    });
+
+    // 视口观察器 (离开屏幕时彻底冻结 RAF，零 CPU 占用)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting;
+          if (isVisible) {
+            wakeUp();
+          } else if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(canvas);
+
+    // 窗口尺寸自适应
+    window.addEventListener('resize', () => {
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      wakeUp();
+    });
+
+    // 启动初始动画
+    wakeUp();
+  })();
+</script>
