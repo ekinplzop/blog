@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import EpistemicBanner from '../components/EpistemicBanner.astro';
 import TimeMachine from '../components/TimeMachine.astro';
 import SidebarTree from '../components/SidebarTree.astro';
+import InteractiveEnhancer from '../components/InteractiveEnhancer.astro';
 
 interface Props {
   entry: any;
@@ -362,4 +363,7 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
       renderMermaid();
     }
   </script>
+
+  <!-- 全局 Obsidian Callout 美化与 Reactive Markdown DSL 引擎 -->
+  <InteractiveEnhancer />
 </BaseLayout>

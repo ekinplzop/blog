@@ -1,0 +1,267 @@
+---
+---
+
+<div id="interactive-enhancer-anchor" class="hidden"></div>
+
+<script>
+  // ============================================================
+  // 1. Obsidian Callout 原生提示框渲染引擎
+  // ============================================================
+  const CALLOUT_CONFIG: Record<string, { icon: string; title: string; classes: string; titleColor: string }> = {
+    danger: {
+      icon: '🛑',
+      title: '高频考点警示',
+      classes: 'border-l-4 border-rose-500 bg-rose-500/10 text-content',
+      titleColor: 'text-rose-500 dark:text-rose-400 font-bold',
+    },
+    error: {
+      icon: '🛑',
+      title: '注意避坑',
+      classes: 'border-l-4 border-rose-500 bg-rose-500/10 text-content',
+      titleColor: 'text-rose-500 dark:text-rose-400 font-bold',
+    },
+    tip: {
+      icon: '💡',
+      title: '考点解题规律',
+      classes: 'border-l-4 border-emerald-500 bg-emerald-500/10 text-content',
+      titleColor: 'text-emerald-600 dark:text-emerald-400 font-bold',
+    },
+    hint: {
+      icon: '💡',
+      title: '提示',
+      classes: 'border-l-4 border-emerald-500 bg-emerald-500/10 text-content',
+      titleColor: 'text-emerald-600 dark:text-emerald-400 font-bold',
+    },
+    note: {
+      icon: '📝',
+      title: '核心概念注解',
+      classes: 'border-l-4 border-sky-500 bg-sky-500/10 text-content',
+      titleColor: 'text-sky-600 dark:text-sky-400 font-bold',
+    },
+    info: {
+      icon: 'ℹ️',
+      title: '说明',
+      classes: 'border-l-4 border-sky-500 bg-sky-500/10 text-content',
+      titleColor: 'text-sky-600 dark:text-sky-400 font-bold',
+    },
+    warning: {
+      icon: '⚡',
+      title: '注意事项',
+      classes: 'border-l-4 border-amber-500 bg-amber-500/10 text-content',
+      titleColor: 'text-amber-600 dark:text-amber-400 font-bold',
+    },
+  };
+
+  function enhanceCallouts() {
+    const article = document.querySelector('article');
+    if (!article) return;
+
+    const blockquotes = article.querySelectorAll('blockquote');
+    blockquotes.forEach((bq) => {
+      // 检查首行是否包含 [!TYPE]
+      const firstP = bq.querySelector('p');
+      if (!firstP) return;
+
+      const html = firstP.innerHTML.trim();
+      const match = html.match(/^\[!([a-zA-Z_-]+)\]\s*(.*)/i);
+      if (!match) return;
+
+      const type = match[1].toLowerCase();
+      const customTitle = match[2].trim();
+      const cfg = CALLOUT_CONFIG[type] || CALLOUT_CONFIG['note'];
+
+      // 移除原有的 [!TYPE] 标记
+      firstP.innerHTML = customTitle ? customTitle : '';
+      if (!firstP.innerHTML.trim()) {
+        firstP.remove();
+      }
+
+      // 创建现代卡片容器
+      const card = document.createElement('div');
+      card.className = `my-6 p-4 rounded-r-xl border border-border/60 ${cfg.classes} shadow-xs transition-all`;
+
+      const header = document.createElement('div');
+      header.className = `flex items-center gap-2 mb-2 font-mono text-xs ${cfg.titleColor}`;
+      header.innerHTML = `<span>${cfg.icon}</span><span class="uppercase tracking-wider">${customTitle ? customTitle : cfg.title}</span>`;
+
+      // 将原 blockquote 的其余子节点移入
+      card.appendChild(header);
+      while (bq.firstChild) {
+        card.appendChild(bq.firstChild);
+      }
+
+      bq.parentNode?.replaceChild(card, bq);
+    });
+  }
+
+  // ============================================================
+  // 2. Reactive Markdown 通用语法引擎 (Scrubbable Numbers & Calc)
+  // ============================================================
+  const reactiveStore: Record<string, number> = {};
+
+  function safeEvaluate(expr: string): number {
+    try {
+      // 安全白名单替换变量
+      let sanitized = expr;
+      for (const [v, val] of Object.entries(reactiveStore)) {
+        const reg = new RegExp(`\\b${v}\\b`, 'g');
+        sanitized = sanitized.replace(reg, String(val));
+      }
+
+      // 仅允许基础运算与常用 Math 函数，杜绝任意代码注入 (STRIDE 规范)
+      if (/[^0-9+\-*/%().,\sMathceilflooroundabsqrtpweEPItoFixed]/.test(sanitized)) {
+        return NaN;
+      }
+
+      // 安全求值
+      return Function(`"use strict"; return (${sanitized});`)();
+    } catch {
+      return NaN;
+    }
+  }
+
+  function updateAllCalculations() {
+    const calcs = document.querySelectorAll<HTMLElement>('.reactive-calc');
+    calcs.forEach((el) => {
+      const expr = el.getAttribute('data-expr');
+      if (!expr) return;
+      const res = safeEvaluate(expr);
+      el.textContent = isNaN(res) ? 'Err' : (Number.isInteger(res) ? String(res) : res.toFixed(2));
+    });
+  }
+
+  function enhanceReactiveDSL() {
+    const article = document.querySelector('article');
+    if (!article) return;
+
+    // 扫描文章正文并就地转译 [bind:...] 与 [calc:...]
+    // 遍历文本节点，避免破坏外部 DOM 结构
+    const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, null);
+    const nodesToReplace: { node: Text; parent: Node }[] = [];
+
+    while (walker.nextNode()) {
+      const node = walker.currentNode as Text;
+      if (node.nodeValue && (/\[bind:[^\]]+\]/.test(node.nodeValue) || /\[calc:[^\]]+\]/.test(node.nodeValue))) {
+        // 不在 code/pre 标签内转译
+        if (!node.parentElement?.closest('pre, code')) {
+          nodesToReplace.push({ node, parent: node.parentNode! });
+        }
+      }
+    }
+
+    nodesToReplace.forEach(({ node, parent }) => {
+      let text = node.nodeValue || '';
+      const span = document.createElement('span');
+
+      // 1. 替换 [bind:var, min=1, max=10, default=5, step=1]
+      text = text.replace(/\[bind:\s*([a-zA-Z0-9_]+)([^\]]*)\]/g, (_, varName, rawParams) => {
+        let min = 0, max = 100, def = 5, step = 1;
+        rawParams.replace(/([a-zA-Z]+)=([0-9.-]+)/g, (_: any, k: string, v: string) => {
+          if (k === 'min') min = parseFloat(v);
+          if (k === 'max') max = parseFloat(v);
+          if (k === 'default') def = parseFloat(v);
+          if (k === 'step') step = parseFloat(v);
+        });
+
+        reactiveStore[varName] = def;
+
+        return `<span class="reactive-bind inline-flex items-center gap-1 px-2 py-0.5 mx-1 rounded border-2 border-dashed border-sky-400/60 bg-sky-500/10 text-sky-400 font-mono text-xs font-bold cursor-ew-resize select-none hover:bg-sky-500/20 active:scale-95 transition-all" data-var="${varName}" data-min="${min}" data-max="${max}" data-step="${step}" data-val="${def}" title="按住鼠标左键左右拖拽调整数值"><span>${varName} =</span><span class="bind-val underline underline-offset-2">${def}</span><span class="text-[10px] opacity-60">⟷</span></span>`;
+      });
+
+      // 2. 替换 [calc: expr]
+      text = text.replace(/\[calc:\s*([^\]]+)\]/g, (_, expr) => {
+        return `<span class="reactive-calc px-2 py-0.5 mx-1 rounded bg-surface border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold shadow-xs" data-expr="${expr.trim()}">0</span>`;
+      });
+
+      span.innerHTML = text;
+      parent.replaceChild(span, node);
+    });
+
+    // 绑定拖拽事件
+    const binders = document.querySelectorAll<HTMLElement>('.reactive-bind');
+    binders.forEach((binder) => {
+      const varName = binder.getAttribute('data-var')!;
+      const min = parseFloat(binder.getAttribute('data-min') || '0');
+      const max = parseFloat(binder.getAttribute('data-max') || '100');
+      const step = parseFloat(binder.getAttribute('data-step') || '1');
+      const valDisplay = binder.querySelector<HTMLElement>('.bind-val')!;
+
+      let isDragging = false;
+      let startX = 0;
+      let startVal = reactiveStore[varName] || min;
+
+      binder.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startVal = reactiveStore[varName];
+        document.body.style.cursor = 'ew-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const delta = Math.round(dx / 12) * step;
+        let next = startVal + delta;
+        next = Math.max(min, Math.min(max, next));
+
+        if (reactiveStore[varName] !== next) {
+          reactiveStore[varName] = next;
+          valDisplay.textContent = String(next);
+          updateAllCalculations();
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+        }
+      });
+
+      // 移动端 Touch
+      binder.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startVal = reactiveStore[varName];
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - startX;
+        const delta = Math.round(dx / 14) * step;
+        let next = startVal + delta;
+        next = Math.max(min, Math.min(max, next));
+
+        if (reactiveStore[varName] !== next) {
+          reactiveStore[varName] = next;
+          valDisplay.textContent = String(next);
+          updateAllCalculations();
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    });
+
+    // 初始执行一次求值
+    updateAllCalculations();
+  }
+
+  // DOM 启动器
+  function initEnhancements() {
+    enhanceCallouts();
+    enhanceReactiveDSL();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEnhancements);
+  } else {
+    initEnhancements();
+  }
+</script>
