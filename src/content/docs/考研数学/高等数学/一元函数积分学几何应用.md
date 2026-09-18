@@ -4,7 +4,7 @@ publishedDate: "2026-09-18"
 tags: ["考研笔记", "Obsidian"]
 lifecycle:
   status: "evergreen"
-  confidence: 0.95
+  confidence: 0.98
   last_verified: "2026-09-18"
 ---
 
