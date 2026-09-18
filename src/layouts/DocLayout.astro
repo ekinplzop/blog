@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import EpistemicBanner from '../components/EpistemicBanner.astro';
 import TimeMachine from '../components/TimeMachine.astro';
+import SidebarTree from '../components/SidebarTree.astro';
 
 interface Props {
   entry: any;
@@ -14,43 +15,56 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <BaseLayout title={title} description={description}>
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <!-- 左栏：文章目录与知识索引 (2 列) -->
-    <aside class="hidden lg:block lg:col-span-2 sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto pr-2">
-      <div class="text-xs font-mono text-muted mb-4 uppercase tracking-wider font-semibold">
-        本文大纲 / TOC
-      </div>
-      <nav class="space-y-2 text-xs font-mono text-muted">
-        {headings.map((h: any) => (
-          <a
-            href={`#${h.slug}`}
-            class={`block hover:text-content transition-colors truncate ${
-              h.depth === 2 ? 'font-medium text-content/90' : 'pl-3 text-muted/80'
-            }`}
-          >
-            {h.text}
-          </a>
-        ))}
-      </nav>
+  <!-- 移动端悬浮目录呼出按钮 -->
+  <div class="lg:hidden fixed bottom-6 right-6 z-40 flex items-center gap-2">
+    <button
+      id="mobile-tree-toggle"
+      class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-sky-500 text-white font-mono text-xs font-semibold shadow-xl active:scale-95 transition-all"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+      <span>知识库大纲</span>
+    </button>
+  </div>
 
-      <div class="mt-8 pt-6 border-t border-border">
-        <a href={`${baseUrl}/`} class="text-xs font-mono text-sky-500 hover:underline flex items-center gap-1">
-          ← 返回数字花园星图
-        </a>
+  <!-- 移动端抽屉遮罩与侧边栏容器 -->
+  <div
+    id="mobile-tree-drawer"
+    class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+  >
+    <div
+      id="mobile-tree-content"
+      class="w-4/5 max-w-sm h-full bg-surface border-r border-border p-5 flex flex-col transform -translate-x-full transition-transform duration-200 shadow-2xl"
+    >
+      <div class="flex items-center justify-between pb-3 mb-2 border-b border-border text-xs font-mono">
+        <span class="font-bold text-content">知识库目录导航</span>
+        <button id="mobile-tree-close" class="text-muted hover:text-content p-1 text-sm font-bold">✕</button>
       </div>
+      <div class="flex-1 overflow-y-auto">
+        <SidebarTree currentSlug={entry.slug} />
+      </div>
+    </div>
+  </div>
+
+  <!-- 主三栏栅格系统 (3 列 : 6 列 : 3 列) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- 左栏：全站知识库树状导航 (3 列) -->
+    <aside class="hidden lg:block lg:col-span-3 sticky top-20 h-[calc(100vh-6rem)] overflow-hidden pr-3 border-r border-border/70">
+      <SidebarTree currentSlug={entry.slug} />
     </aside>
 
-    <!-- 中栏：阅读主画布 (严格 68ch 宽度控制，居中 7 列) -->
-    <article class="lg:col-span-7 max-w-prose mx-auto w-full">
+    <!-- 中栏：阅读主画布 (严格 68ch 宽度控制，居中 6 列) -->
+    <article class="lg:col-span-6 max-w-prose mx-auto w-full">
       <!-- 标题与基本元信息 -->
       <header class="mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-content mb-3 font-sans">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-content mb-3 font-sans leading-tight">
           {title}
         </h1>
-        <div class="text-xs font-mono text-muted flex items-center gap-4">
+        <div class="text-xs font-mono text-muted flex flex-wrap items-center gap-2 sm:gap-4">
           <span>发布于: {publishedDate}</span>
           <span>·</span>
-          <span>版本: v{entry.data.version || '1.0.0'}</span>
+          <span>路径: {entry.slug}</span>
         </div>
 
         <!-- 认知生命周期横幅 -->
@@ -71,11 +85,36 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       </div>
     </article>
 
-    <!-- 右栏：Tufte 侧边轨道与 Git 认知修订日志 (3 列) -->
+    <!-- 右栏：Tufte 侧边轨道、本篇大纲 TOC 与 Git 演进历史 (3 列) -->
     <aside class="hidden lg:block lg:col-span-3 sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto pl-4 border-l border-border/60">
       <div class="space-y-6">
-        <!-- 认知修订轨迹时间轴 -->
-        <div>
+        <!-- 1. 本篇大纲 TOC -->
+        {headings && headings.length > 0 && (
+          <div>
+            <div class="text-xs font-mono text-muted mb-3 uppercase tracking-wider font-semibold flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+              </svg>
+              <span>本文大纲 / TOC</span>
+            </div>
+            <nav class="space-y-1.5 text-xs font-mono text-muted max-h-56 overflow-y-auto pr-1">
+              {headings.map((h: any) => (
+                <a
+                  href={`#${h.slug}`}
+                  class={`block hover:text-sky-400 transition-colors truncate ${
+                    h.depth === 2 ? 'font-medium text-content/90' : 'pl-3 text-muted/70 text-[11px]'
+                  }`}
+                  title={h.text}
+                >
+                  {h.text}
+                </a>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        <!-- 2. 认知修订轨迹时间轴 -->
+        <div class="pt-4 border-t border-border/60">
           <div class="text-xs font-mono text-muted mb-3 uppercase tracking-wider font-semibold flex items-center justify-between">
             <span>认知演进轨迹</span>
             <span class="text-[10px] bg-surface px-1.5 py-0.5 rounded border border-border">Git 追溯</span>
@@ -98,15 +137,48 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
           )}
         </div>
 
-        <!-- 旁注提示说明卡片 -->
+        <!-- 3. Tufte 旁注哲学卡片 -->
         <div class="p-3.5 rounded-lg border border-border/60 bg-surface/50 text-xs font-sans text-muted">
           <div class="font-semibold text-content mb-1 font-mono text-[11px]">💡 Tufte 旁注哲学</div>
-          所有关于算法收敛性推导与前置公理假设，均通过旁注和状态机实时联动呈现，无需跳出阅读心流。
+          左侧导航掌握全景知识脉络，右侧掌握当前章节演进与证明，正文保持纯净阅读心流。
         </div>
       </div>
     </aside>
   </div>
 
+  <!-- 移动端侧边栏交互脚本 -->
+  <script is:inline>
+    const toggleBtn = document.getElementById('mobile-tree-toggle');
+    const drawer = document.getElementById('mobile-tree-drawer');
+    const content = document.getElementById('mobile-tree-content');
+    const closeBtn = document.getElementById('mobile-tree-close');
+
+    function openDrawer() {
+      if (!drawer || !content) return;
+      drawer.classList.remove('opacity-0', 'pointer-events-none');
+      drawer.classList.add('opacity-100', 'pointer-events-auto');
+      content.classList.remove('-translate-x-full');
+      content.classList.add('translate-x-0');
+    }
+
+    function closeDrawer() {
+      if (!drawer || !content) return;
+      drawer.classList.remove('opacity-100', 'pointer-events-auto');
+      drawer.classList.add('opacity-0', 'pointer-events-none');
+      content.classList.remove('translate-x-0');
+      content.classList.add('-translate-x-full');
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (drawer) {
+      drawer.addEventListener('click', (e) => {
+        if (e.target === drawer) closeDrawer();
+      });
+    }
+  </script>
+
+  <!-- 全局 KaTeX 数学公式自动补丁渲染 -->
   <script>
     import renderMathInElement from 'katex/dist/contrib/auto-render.mjs';
 

@@ -1,0 +1,65 @@
+---
+import type { DocTreeNode } from '../utils/docTree';
+
+interface Props {
+  node: DocTreeNode;
+  currentSlug: string;
+  baseUrl: string;
+  level?: number;
+}
+
+const { node, currentSlug, baseUrl, level = 0 } = Astro.props;
+
+// 判断当前文件夹是否包含正在阅读的文章（如果包含，则默认展开该文件夹）
+function containsActiveDoc(item: DocTreeNode): boolean {
+  if (!item.isFolder) {
+    return item.slug === currentSlug;
+  }
+  return item.children.some((child) => containsActiveDoc(child));
+}
+
+const isFolderActive = node.isFolder && containsActiveDoc(node);
+const isFileActive = !node.isFolder && node.slug === currentSlug;
+---
+
+{node.isFolder ? (
+  <details open={isFolderActive} class="group my-0.5 select-none">
+    <summary class="flex items-center justify-between gap-1.5 px-2 py-1.5 rounded-lg text-xs font-mono font-medium text-muted hover:text-content hover:bg-surface/60 cursor-pointer transition-colors list-none">
+      <div class="flex items-center gap-1.5 truncate">
+        <svg class="w-3.5 h-3.5 text-muted/70 group-open:rotate-90 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class={`truncate ${level === 0 ? 'font-semibold text-content/90 tracking-tight' : ''}`}>
+          {node.name}
+        </span>
+      </div>
+      <span class="text-[10px] font-mono text-muted/50 px-1 py-0.2 rounded bg-surface border border-border/40 shrink-0">
+        {node.children.length}
+      </span>
+    </summary>
+
+    <div class="pl-3 ml-2 border-l border-border/60 my-0.5 space-y-0.5">
+      {node.children.map((child) => (
+        <Astro.self
+          node={child}
+          currentSlug={currentSlug}
+          baseUrl={baseUrl}
+          level={level + 1}
+        />
+      ))}
+    </div>
+  </details>
+) : (
+  <a
+    href={`${baseUrl}/docs/${node.slug}`}
+    class={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-sans transition-all truncate block ${
+      isFileActive
+        ? 'bg-sky-500/15 text-sky-400 font-semibold border-l-2 border-sky-400 pl-2 shadow-xs'
+        : 'text-muted/80 hover:text-content hover:bg-surface/50'
+    }`}
+    title={node.title}
+  >
+    <span class={`w-1.5 h-1.5 rounded-full shrink-0 ${isFileActive ? 'bg-sky-400' : 'bg-muted/40'}`}></span>
+    <span class="truncate">{node.title}</span>
+  </a>
+)}
