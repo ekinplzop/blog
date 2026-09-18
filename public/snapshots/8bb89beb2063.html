@@ -1,0 +1,1800 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[快照] [网络基础]以太网的最大和最小帧长是怎样计算的_以太网帧的最小长度和最大长度-CSDN博客</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0a0a0c; color: #f3f4f6; line-height: 1.6; }
+    .perma-header { background: #121216; border-bottom: 1px solid #27272a; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; font-family: monospace; font-size: 12px; }
+    .badge { background: #0284c7; color: #fff; padding: 3px 8px; border-radius: 9999px; font-weight: bold; }
+    .url { color: #38bdf8; text-decoration: none; word-break: break-all; }
+    .url:hover { text-decoration: underline; }
+    .main-content { max-width: 900px; margin: 32px auto; padding: 0 20px; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <div class="perma-header">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="badge">🏛️ Cognitive Kernel 永久快照归档</span>
+      <span>抓取日期: 2026-09-18</span>
+    </div>
+    <div>
+      原网址: <a class="url" href="https://blog.csdn.net/u012503786/article/details/78615551" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/u012503786/article/details/78615551 ↗</a>
+    </div>
+  </div>
+  <main class="main-content">
+    <h1>[网络基础]以太网的最大和最小帧长是怎样计算的_以太网帧的最小长度和最大长度-CSDN博客</h1>
+    <div class="snapshot-body">
+      
+    <div id="toolbarBox" style="min-height: 48px;"></div>
+        
+    
+    
+
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/pc/css/blog_code-01256533b5.min.css">
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/chart-3456820cac.css" />
+    <link rel="stylesheet" href="https://g.csdnimg.cn/lib/swiper/6.0.4/css/swiper.css" />
+    
+    
+        <div class="main_father clearfix d-flex justify-content-center " style="height:100%;">
+          <div class="container clearfix " id="mainBox">
+          
+          <main>
+
+<div class="blog-content-box">
+  <div class="article-header-box" id="article-header-box">
+    <div class="article-header">
+      <div class="article-title-box">
+        <h1 class="title-article" id="articleContentId">[网络基础]以太网的最大和最小帧长是怎样计算的</h1>
+      </div>
+      <div class="article-info-box">
+              <div class="up-time">最新推荐文章于&nbsp;2025-10-24 00:00:14&nbsp;发布</div>
+          <div class="article-bar-top">
+              <div class="bar-content active">
+              <span class="article-type-text original">原创</span>
+
+              
+                    <span class="time blog-postTime" data-time="2017-11-23 15:45:20">最新推荐文章于&nbsp;2025-10-24 00:00:14&nbsp;发布</span>
+                <span class="border-dian">·</span>
+                <span class="read-count">4.1w 阅读</span>
+                <div class="read-count-box is-like like-ab-new" data-type="top">
+                  <span class="border-dian">·</span>
+                  <img class="article-read-img article-heard-img active" style="display:none" id="is-like-imgactive-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Active.png" alt="">
+                  <img class="article-read-img article-heard-img" style="display:block" id="is-like-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Black.png" alt="">
+                  <span class="read-count" id="blog-digg-num" style="color:;">
+                      14
+                  </span>
+                </div>
+                <span class="border-dian">·</span>
+                <a id="blog_detail_zk_collection" class="un-collection" data-report-click='{"mod":"popu_823","spm":"1001.2101.3001.4232","ab":"new"}'>
+                  <img class="article-collect-img article-heard-img un-collect-status isdefault" style="display:inline-block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollect2.png" alt="">
+                  <img class="article-collect-img article-heard-img collect-status isactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive2.png" alt="">
+                  <span class="get-collection">
+                      83
+                  </span>
+                </a>
+
+                    <span class="border-dian">·</span>
+                    <div class="href-article-edit-new">
+                      <span class="href-article-edit-click">本内容遵循CC 4.0 BY-SA版权协议</span>
+                      <div class="slide-content-box-new">
+                                  版权声明：本文为博主原创文章，遵循<a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener"> CC 4.0 BY-SA </a>版权协议，转载请附上原文出处链接和本声明。
+                      </div>
+                    </div>
+              </div>
+          </div>
+          <div class="blog-tags-box article-header-tags-v2">
+
+<div class="article-header-categories-wrap">
+  <div class="article-header-collect-row">
+    <div class="article-header-category-segment article-header-collect-segment" id="article-header-collect-group" data-column-count="1">
+      <span class="article-header-row-dot" style="display:none">·</span>
+      <div class="article-header-category-group article-header-collect-group">
+        <span class="article-header-label">收录于</span>
+        <div class="article-header-pill-list article-header-collect-list" id="article-header-collect-list">
+    <div class="article-header-badge column-badge column-badge-free">
+      <div class="article-header-badge-trigger">
+        <img class="badge-icon" src="https://i-blog.csdnimg.cn/columns/default/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_224,w_224" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+        <span class="badge-name">网络</span>
+      </div>
+      <div class="article-header-badge-dropdown column-dropdown">
+        <p class="dropdown-title">当前文章被收录于：</p>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-column-body">
+          <div class="dropdown-column-main">
+            <a class="column-detail-link column-detail-cover-link"
+              href="https://blog.csdn.net/u012503786/category_7302506.html"
+              target="_blank"
+              rel="noopener"
+              data-report-view='{"spm":"1001.2101.3001.6332"}'
+              data-report-click='{"spm":"1001.2101.3001.6332"}'>
+              <img class="dropdown-cover" src="https://i-blog.csdnimg.cn/columns/default/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_224,w_224" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+            </a>
+            <div class="dropdown-info">
+              <a class="column-detail-link column-detail-name-link"
+                href="https://blog.csdn.net/u012503786/category_7302506.html"
+                target="_blank"
+                rel="noopener"
+                title="网络"
+                data-report-view='{"spm":"1001.2101.3001.6332"}'
+                data-report-click='{"spm":"1001.2101.3001.6332"}'>
+                <p class="dropdown-name">网络</p>
+              </a>
+              <div class="dropdown-stats">
+                <span class="stats-group">
+                  <em class="stats-num">20</em>
+                  <span class="stats-label">篇文章</span>
+                </span>
+                <span class="stats-divider"></span>
+                <span class="stats-group">
+                  <em class="stats-num">10</em>
+                  <span class="stats-label">人学习</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-actions">
+            <a class="dropdown-btn dropdown-btn-column articleColumnFreeBt" data-id="7302506">订阅专栏</a>
+          <a class="dropdown-link" href="https://blog.csdn.net/u012503786/category_7302506.html" target="_blank" rel="noopener" data-report-view='{"spm":"1001.2101.3001.6332"}' data-report-click='{"spm":"1001.2101.3001.6332"}'>查看详情</a>
+        </div>
+      </div>
+    </div>
+          <span class="article-header-community-slot community-name" id="community-name"></span>
+<div class="tag-more-btn collect-more-btn column-collect-more-btn" style="display:none" id="article-header-collect-more-btn" data-report-click='{"spm":"1001.2101.3001.4224"}'>
+  <svg class="more-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+    <circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/>
+  </svg>
+  <div class="column-more-dropdown">
+    <p class="dropdown-title">当前文章被以下社区和专栏收录：</p>
+    <div class="column-more-list" id="article-header-collect-more-list">
+      <div class="dropdown-divider column-more-item-divider"></div>
+    </div>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+          </div>
+      </div>
+    </div>
+  </div>
+    <div id="blogHuaweiyunAdvert"></div>
+      <div class="ai-abstract-box">
+         <div class="ai-abstract">
+          <div class="abstract-content">
+            <img class="lock-img" src="https://i-operation.csdnimg.cn/images/a7311a21245d4888a669ca3155f1f4e5.png" alt="">本文详细介绍了以太网最小帧长的概念及其计算方法，解释了为什么需要设定最小帧长，以及它是如何确保网络传输的可靠性和效率的。同时，还探讨了不同速度的以太网对于最小帧长的不同要求。
+          </div>
+        </div>
+      </div>
+
+
+    <article class="baidu_pl">
+        <div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-a50b13a894.css">
+                <div id="content_views" class="htmledit_views atom-one-dark">
+                    <h3>1、以太网的最小帧长</h3> 
+<p><strong>前提条件&#xff1a;10Mbps的传输速率&#xff1b;载波多路复用/冲突检测&#xff08;CSMA/CD&#xff09;</strong></p> 
+<p><strong>&#xff08;1&#xff09;、CSMA/CD</strong></p> 
+<p>&#xff08;Carrier Sense Multiple Access with Collision Detection&#xff09;带冲突检测的载波监听多路访问技术(载波监听多点接入/碰撞检测)。在传统的共享<a href="https://baike.baidu.com/item/%E4%BB%A5%E5%A4%AA%E7%BD%91" rel="nofollow">以太网</a>中&#xff0c;所有的节点共享<a href="https://baike.baidu.com/item/%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8" rel="nofollow">传输介质</a>。如何保证传输介质有序、高效地为许多<a href="https://baike.baidu.com/item/%E8%8A%82%E7%82%B9" rel="nofollow">节点</a><a href="https://baike.baidu.com/item/%E6%8F%90%E4%BE%9B" rel="nofollow">提供</a>传输<a href="https://baike.baidu.com/item/%E6%9C%8D%E5%8A%A1/85523" rel="nofollow">服务</a>&#xff0c;就是以太网的<a href="https://baike.baidu.com/item/%E4%BB%8B%E8%B4%A8%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6" rel="nofollow">介质访问控制</a>协议要解决的问题。</p> 
+<p><strong>载波监听&#xff08;carrier sense&#xff09;&#xff1a;</strong>以太网上的各个工作站在发送数据时&#xff0c;都要监听总线上有没有数据正在传输。</p> 
+<p>若有数据传输&#xff08;称总线为忙&#xff09;&#xff0c;则不发送数据</p> 
+<p>       若无数据传输&#xff08;称总线为空&#xff09;&#xff0c;可以立即发送准备好的数据</p> 
+<p><strong>多路访问&#xff1a;</strong></p> 
+<p>以太网上的各个工作站在发送数据时&#xff0c;共用一条总线&#xff0c;且发送数据是广播式的</p> 
+<p><strong>冲突&#xff08;碰撞&#xff09;&#xff1a;</strong>以太网上有两个或两个以上的工作站同时发送数据&#xff0c;在总线上就会产生信号的冲突&#xff1b;哪个工作站接收到的数据都辨别不出真正的信息。</p> 
+<p><strong>&#xff08;2&#xff09;、以太网的探测帧</strong></p> 
+<p><strong>冲突产生&#xff1a;</strong></p> 
+<p>总线处于空的状态&#xff0c;而且工作站是依次监听到空的状态&#xff0c;那么各个工作站就会陆续向总线发送数据。</p> 
+<p>     A工作站发送的数据还未传递到另一个要发送数据B工作站。那么B工作站就会认为总线为空的状态&#xff0c;就会向总线发送数据。造成冲突。</p> 
+<p>       这仅仅是两个工作站&#xff0c;实际上可能有更多的工作站。</p> 
+<p>    <strong>冲突解决方法&#xff1a;</strong></p> 
+<p>问题&#xff1a;必须采取一种办法&#xff1b;否则&#xff0c;则会导致工作站一直向总线注入数据&#xff0c;而又会检测到冲突。既浪费工作站和总线的资源&#xff0c;又会导致数据迟迟发不出去。</p> 
+<p>原理&#xff1a;假设某个工作站检测到冲突发生&#xff0c;就发送碰撞信号&#xff0c;使冲突更加明显&#xff0c;使得所有工作站都能检测到总线发生冲突。然后每个想要发送数据的工作站&#xff0c;检测到总线为空&#xff0c;在发送数据之前&#xff0c;<strong>先发送一个数据帧&#xff08;探测帧&#xff09;</strong>。探测帧的长度既<strong>要求最快速的到达目的地</strong>&#xff08;尽量小&#xff09;&#xff0c;又要保证探测帧的传递时间足够&#xff08;发送时间大于所有工作站监测到冲突并发送碰撞的时间&#xff09;使得其他工作站能够监听到。这个探测帧的长度就是<strong>以太网规定的最小帧长</strong>。</p> 
+<p>结果就是&#xff0c;如果没有工作站发出碰撞信号打断探测帧的传输&#xff0c;那么就代表总线确实为空&#xff0c;并且没有工作站和“我”争抢总线资源。然后就可以正式发送数据。</p> 
+<p>        例&#xff1a;重新上述内容&#xff0c;A工作站发送向总线数据&#xff0c;B工作站在未检测到A工作站发送的数据时&#xff0c;以为总线为空&#xff0c;开始发送数据。冲突产生&#xff1b;假设B工作站监测到冲突&#xff0c;然后发送一个碰撞信号&#xff08;01010101或者10101010&#xff09;。如果A工作站未发送完毕&#xff0c;则会重新发送。&#xff08;因为冲突已经导致之前发送的数据无法辨认了&#xff09;</p> 
+<p><strong>&#xff08;3&#xff09;、如何计算最小帧长&#xff1f;</strong></p> 
+<p>10Mbps以太网中规定&#xff0c;最大连接距离是2500米。</p> 
+<p>一帧的传输时间等于   传输时延  &#43;  工作站发送时间&#xff08;有快有慢&#xff09;&#xff1b;</p> 
+<p><strong>所以10Mbps以太网直接规定一帧的最小发送时间为51.2μs</strong></p> 
+<p><strong>最小帧长度 &#61; 10Mbps * 51.2μs &#61;512bit &#61; 64字节</strong></p> 
+<p><strong>这是对于10Mbps以太网</strong></p> 
+<p>100Mbps以太网的时隙仍为512位时&#xff0c;以太网规定一帧的最小发送时间必须为5.12μs。</p> 
+<p>1000Mbps以太网的时隙增至512字节&#xff0c;即4096位时&#xff0c;4.096μs。</p> 
+<p><strong>结论&#xff1a;</strong>以太网的最小帧长&#xff0c;是因为<strong>使用CSMA/CD</strong>的原因&#xff1b;对于1000Mb/s的吉比特以太网&#xff0c;MAC层有两种选择&#xff0c;要么保留CSMA/CD&#xff0c;要么不用它。若保留CSMA/CD协议&#xff0c;必须面临碰撞检测问题&#xff0c;这就要再一次减小网络的最大有效传输距离到25米。当然您可以不缩短网络的距离&#xff0c;而是增加一个帧的程度&#xff0c;就如我们开始分析100Mb/s以太网那样&#xff0c;让一个帧持续足够长的时间。但因为上层来的数据没有这么多&#xff0c;所以就需要在MAC层进行一些无用数据的填充来满足这个要求。</p> 
+<p><strong>最后&#xff1a;</strong></p> 
+<p>   最小帧长/传输速率 <strong>正比于 </strong>网络最大传输距离/光速</p> 
+<p>光速是恒定的&#xff0c;最大传输距离根据信号衰减人为规定的。传输速率也是设计好的。</p> 
+<h3>2、以太网最大帧长</h3> 
+<p>IP的首部中的IP数据报总长度有16位&#xff0c;代表可以传送65535字节&#xff0c;加上以太网头&#xff0c;应该最大为65553字节。</p> 
+<p>但是在10Mbps以太网上&#xff0c;将会占用共享链路长达50ms,这将严重影响其它主机的通信&#xff0c;特别是对延迟敏感的应用是无法接受的。</p> 
+<p>而如果采用小包传送&#xff0c;那么每个帧上都有以太网头&#xff0c;IP头&#xff0c;可能有TCP头或者UDP头。这样导致&#xff0c;越小的帧&#xff0c;传输效率越低。</p> 
+<p><strong>最后以太网规定&#xff0c;最大帧长的数据长度为1500个字节&#xff08;只是规定&#xff09;</strong></p> 
+<p> </p> 
+<p><strong>如有错误&#xff0c;请大家批评指正</strong></p>
+                </div>
+        </div>
+    </article>
+
+
+
+
+  
+<div class="article-footer-categories-wrap">
+  <div class="article-footer-category-segment">
+    <div class="article-footer-category-group">
+      <span class="article-footer-label">标签</span>
+      <div class="article-footer-pill-list">
+          <a rel="nofollow" data-report-query="spm=1001.2101.3001.4223" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"网络","ab":"new","extra":"{\"searchword\":\"网络\"}"}' data-report-view='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"网络","ab":"new","extra":"{\"searchword\":\"网络\"}"}' class="tag-link-new" href="https://so.csdn.net/so/search/s.do?q=%E7%BD%91%E7%BB%9C&t=all&o=vip&s=&l=&f=&viparticle=&from_tracking_code=tag_word&from_code=app_blog_art" target="_blank" rel="noopener">#网络</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="directory-boxshadow-dialog" style="display:none;">
+  <div class="directory-boxshadow-dialog-box">
+  </div>
+   <div class="vip-limited-time-offer-box-new" id="vip-limited-time-offer-box-new">
+      <img class="limited-img limited-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close-newWhite.png">
+      <div class="vip-limited-time-top">
+        确定要放弃本次机会？
+      </div>
+      <span class="vip-limited-time-text">福利倒计时</span>
+      <div class="limited-time-box-new">
+        <span class="time-hour"></span>
+        <i>:</i>
+        <span class="time-minite"></span>
+        <i>:</i>
+        <span class="time-second"></span>
+      </div>
+      <div class="limited-time-vip-box">
+        <p>
+          <img class="coupon-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close-roup.png">
+          <span class="def">立减 ¥</span>
+          <span class="active limited-num"></span>
+        </p>
+        <span class="">普通VIP年卡可用</span>
+      </div>
+      <a class="limited-time-btn-new" href="https://mall.csdn.net/vip" data-report-click='{"spm":"1001.2101.3001.9621"}' data-report-query='spm=1001.2101.3001.9621'>立即使用</a>
+  </div>
+</div>
+    <div class="more-toolbox-new more-toolbar" id="toolBarBox">
+      <div class="left-toolbox">
+        <div class="toolbox-left">
+            <div class="profile-box">
+              <a class="profile-href" target="_blank" href="https://blog.csdn.net/u012503786"><img class="profile-img" src="https://profile-avatar.csdnimg.cn/c45058b3092d4ac1ae76b3c102ee2304_u012503786.jpg!1">
+                <span class="profile-name">
+                  hanfs390
+                </span>
+              </a>
+            </div>
+            <div class="profile-attend">
+                <a class="tool-attend tool-bt-button tool-bt-attend" href="javascript:;" data-report-view='{"mod":"1592215036_002","spm":"1001.2101.3001.4232","extend1":"关注"}'>关注</a>
+              <a class="tool-item-follow active-animation" style="display:none;">关注</a>
+            </div>
+        </div>
+        <div class="toolbox-middle">
+          <ul class="toolbox-list">
+            <li class="tool-item tool-item-size tool-active is-like" id="is-like" data-type="bottom">
+              <a class="tool-item-href">
+                <img style="display:none;" id="is-like-imgactive-animation-like" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarThumbUpactive.png" alt="">
+                <img class="isactive" style="display:none" id="is-like-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/like-active.png" alt="">
+                <img class="isdefault" style="display:block" id="is-like-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/like.png" alt="">
+                <span id="spanCount" class="count ">
+                    14
+                </span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">点赞</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-unlike" id="is-unlike">
+              <a class="tool-item-href">
+                <img class="isactive" style="margin-right:0px;display:none" id="is-unlike-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/unlike-active.png" alt="">
+                <img class="isdefault" style="margin-right:0px;display:block" id="is-unlike-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/unlike.png" alt="">
+                <span id="unlikeCount" class="count "></span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">踩</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-collection ">
+              <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"popu_824","spm":"1001.2101.3001.4130","ab":"new"}'>
+                <img style="display:none" id="is-collection-img-collection" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/collect-active.png" alt="">
+                <img class="isdefault" id="is-collection-img" style="display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/collect.png" alt="">
+                <img class="isactive" id="is-collection-imgactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectActive.png" alt="">
+                <span class="count get-collection " data-num="83" id="get-collection">
+                    83
+                </span>
+              </a>
+              <div class="tool-hover-tip collect">
+                <div class="collect-operate-box">
+                  <span class="collect-text" id="is-collection">
+                    收藏
+                  </span>
+                </div>
+              </div>
+              <div class="tool-active-list">
+                <div class="text">
+                  觉得还不错?
+                  <span class="collect-text" id="tool-active-list-collection">
+                    一键收藏
+                  </span>
+                 <img id="tool-active-list-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/collectionCloseWhite.png" alt="">
+                </div>
+              </div>
+            </li>
+            <li class="tool-item tool-item-size tool-active tool-item-comment">
+              <a class="tool-item-href go-side-comment" data-report-click='{"spm":"1001.2101.3001.7009"}'>
+                <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/comment.png" alt="">
+                <span class="count">
+                    2
+                </span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">评论</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active tool-QRcode" data-type="article" id="tool-share">
+              <a class="tool-item-href" href="javascript:;" data-report-view='{"spm":"3001.4129","extra":{"type":"blogdetail"}}'>
+                <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/share.png" alt="">
+                <span class="count">分享</span>
+              </a>
+                <div class="QRcode" id="tool-QRcode">
+                <div class="share-bg-box">
+                  <div class="share-content">
+                    <a id="copyPosterUrl" data-type="link" class="btn-share">复制链接</a>
+                  </div>
+                  <div class="share-content">
+                    <a class="btn-share" data-type="qq">分享到 QQ</a>
+                  </div>
+                  <div class="share-content">
+                    <a class="btn-share" data-type="weibo">分享到新浪微博</a>
+                  </div>
+                  <div class="share-code">
+                    <div class="share-code-box" id='shareCode'></div>
+                    <div class="share-code-text">
+                      <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/share/icon-wechat.png" alt="">扫一扫
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <li class="tool-item tool-item-size tool-active is-more" id="is-more">
+            <a class="tool-item-href">
+              <img class="isdefault" style="margin-right:0px;display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/more.png" alt="">
+              <span class="count"></span>
+            </a>
+            <div class="more-opt-box">
+              <div class="mini-box">
+                <a class="tool-item-href" id="toolReportBtnHide">
+                  <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/report.png" alt="">
+                  <span class="count">举报</span>
+                </a>
+              </div>
+              <div class="normal-box">
+                <a class="tool-item-href" id="toolReportBtnHideNormal">
+                  <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/report.png" alt="">
+                  <span class="count">举报</span>
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="toolbox-right">
+            <div class="tool-directory">
+                <a class="bt-columnlist-show"
+                  data-id="7302506"
+                  data-free="true"
+                  data-description=""
+                  data-subscribe="false"
+                  data-title="网络"
+                  data-img="https://i-blog.csdnimg.cn/columns/default/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_224,w_224"
+                  data-url="https://blog.csdn.net/u012503786/category_7302506.html"
+                  data-sum="20"
+                  data-people="10"
+                  data-price="0"
+                  data-hotRank="0"
+                  data-status="true"
+                  data-oldprice="0"
+                  data-join="false"
+                  data-studyvip="false"
+                  data-studysubscribe="false"
+                  data-report-view='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'
+                  data-report-click='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'>专栏目录</a>
+          </div>
+</div>
+</div>
+</div>
+
+
+
+                <div class="first-recommend-box recommend-box ">
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_55318460/article/details/129967685"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-1-129967685-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://blog.csdn.net/weixin_55318460/article/details/129967685"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_55318460/article/details/129967685" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-1-129967685-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://blog.csdn.net/weixin_55318460/article/details/129967685"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-1-129967685-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.t0_cc&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-1-129967685-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>计算</em>CSMA/CD中的<em>最小帧长</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_55318460" target="_blank"><span class="blog-title">weixin_55318460的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">04-05</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					5169
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_55318460/article/details/129967685" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-1-129967685-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://blog.csdn.net/weixin_55318460/article/details/129967685"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-1-129967685-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.t0_cc&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-1-129967685-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">不同传播介质的传播速率有所不同，电磁波约20万公里每秒，光约30万公里每秒，卫星直接给出传播时延为0.27s或270ms。发送时延：是主机或路由器发送数据<em>帧</em>所需要的时间,也就是从发送数据的第一个比特算起,到该<em>帧</em>的最后一个比特发送完毕所需的时间。最终简化下来的1000m/1x10^1m/s=1000/10=100b,得出<em>最小帧长</em>为100b。在<em>计算</em><em>最小帧长</em>前，要先了解在<em>网络</em>中发一<em>帧</em>所需的两个主要时延（发送时延与传播时延）则带入<em>最小帧长</em>的公式：发送时延&gt;=2倍的传播时延。注意：<em>计算</em>时延的单位要统一，建议。</div>
+			</a>
+		</div>
+	</div>
+</div>
+                </div>
+            
+              <div class="second-recommend-box recommend-box ">
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/m0_52951519/article/details/143488959"  data-report-view='{"ab":"new","spm":"1001.2101.3001.11989","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t1.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-143488959-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t1_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_52951519/article/details/143488959"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/m0_52951519/article/details/143488959" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.11989","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t1.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-143488959-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t1_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_52951519/article/details/143488959"}'  data-report-query='spm=1001.2101.3001.11989&utm_medium=distribute.pc_relevant_t1.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-143488959-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.t1_cc&depth_1-utm_source=distribute.pc_relevant_t1.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-143488959-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em><em>帧</em><em>长度</em>范围</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_52951519" target="_blank"><span class="blog-title">m0_52951519的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">11-04</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					3214
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/m0_52951519/article/details/143488959" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.11989","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t1.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-143488959-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.t1_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_52951519/article/details/143488959"}'  data-report-query='spm=1001.2101.3001.11989&utm_medium=distribute.pc_relevant_t1.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-143488959-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.t1_cc&depth_1-utm_source=distribute.pc_relevant_t1.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-143488959-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>以太网</em><em>帧</em><em>长度</em>范围
+	<em>最小</em><em>长度</em>：<em>以太网</em><em>帧</em><em>最小</em><em>长度</em>是 64 字节。这是因为在<em>以太网</em>的冲突检测机制中，如果<em>帧</em><em>长度</em>过短，信号在<em>网络</em>上传输的时间过短，可能导致发送站还没来得及检测到冲突，<em>帧</em>就已经发送完毕。所以规定了<em>最小</em><em>长度</em>，以确保有足够的时间来检测冲突。其中包括 14 字节的<em>帧</em>头（目的 MAC 地址 6 字节、源 MAC 地址 6 字节、类型 / <em>长度</em>字段 2 字节）、46 字节的有效载荷（数据部分）<em>和</em> 4 字节的<em>帧</em>校验序列（FCS）。
+		<em>最大长度</em>：<em>以太网</em><em>帧</em><em>最大长度</em>为 1518 字节。这个限制主要是考虑到<em>网络</em>设备的</div>
+			</a>
+		</div>
+	</div>
+</div>
+              </div>
+<a id="commentBox" name="commentBox"></a>
+  <div id="pcCommentBox" class="comment-box comment-box-new2 login-comment-box-new" style="display:none">
+    <div class="has-comment" style="display:block">
+      <div class="one-line-box">
+        <div class="has-comment-tit go-side-comment">
+          <span class="count">2</span>&nbsp;条评论
+        </div>
+        <div class="has-comment-con comment-operate-item"></div>
+        <a class="has-comment-bt-right go-side-comment focus">写评论</a>
+      </div>
+    </div>
+  </div>
+              <div class="recommend-box insert-baidu-box recommend-box-style ">
+                <div class="recommend-item-box no-index" style="display:none"></div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://bingw.blog.csdn.net/article/details/52719183"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-1-52719183-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/52719183"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://bingw.blog.csdn.net/article/details/52719183" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-1-52719183-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/52719183"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-1-52719183-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.s0_cc&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-1-52719183-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1">CSMA/CD协议<em>最小帧长</em>的思考</div>
+					<div class="tag">热门推荐</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/u011240016" target="_blank"><span class="blog-title">Bing&#39;s Blog</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">10-01</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					2万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://bingw.blog.csdn.net/article/details/52719183" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-1-52719183-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s0_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"1","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/52719183"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-1-52719183-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.s0_cc&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-1-52719183-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">回顾CSMACSMA协议的三种坚持：
+1-坚持
+非坚持
+p-坚持 
+概念理解，过程弄清楚就不是问题了，这是概念，<em>计算</em>基本无从谈起。 
+但是CSMA/CD协议，我想很多人<em>和</em>我一样对于<em>最小帧长</em>，争用期，二进制指数退避算法的应用是有一些困惑的。也因此，这是出数字<em>计算</em>的出题点。
+本篇便是对这部分知识点的归纳总结。CSMA/CD的流程首先，需要建立的认识是：采用此协议的<em>网络</em>，无法进行全双工通信。 
+具体的工作</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://xianfan.blog.csdn.net/article/details/128811995"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-2-128811995-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"2","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://xianfan.blog.csdn.net/article/details/128811995"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://xianfan.blog.csdn.net/article/details/128811995" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-2-128811995-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"2","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://xianfan.blog.csdn.net/article/details/128811995"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-2-128811995-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-2-128811995-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>协议<em>帧</em>格式（一）</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_42357877" target="_blank"><span class="blog-title">qq_42357877的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">01-31</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://xianfan.blog.csdn.net/article/details/128811995" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~PaidSort-2-128811995-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"2","strategy":"2~default~BlogCommendFromBaidu~PaidSort","dest":"https://xianfan.blog.csdn.net/article/details/128811995"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-2-128811995-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7EPaidSort-2-128811995-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">浅谈常用的<em>网络</em>协议<em>帧</em>格式。</div>
+			</a>
+		</div>
+	</div>
+</div>
+		<dl id="recommend-item-box-tow" class="recommend-item-box type_blog clearfix">
+			
+		</dl>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_40163242/article/details/109849622"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-3-109849622-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s3_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"3","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_40163242/article/details/109849622"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_40163242/article/details/109849622" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-3-109849622-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s3_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"3","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_40163242/article/details/109849622"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-3-109849622-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.s3_cc&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-3-109849622-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>计算</em>机<em>网络</em>习题：CSMA/CD系列</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_40163242" target="_blank"><span class="blog-title">AAS48的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">11-20</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_40163242/article/details/109849622" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-3-109849622-blog-78615551.235^v43^pc_blog_bottom_relevance_base3.s3_cc\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"3","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_40163242/article/details/109849622"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-3-109849622-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3.s3_cc&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-3-109849622-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">一、<em>最小帧长</em>问题
+关键抓住一条公式：<em>最小帧长</em> / 数据传输率 = 2t
+t：表示单向传播时延。
+【1】
+
+比较轻松。
+
+【2】
+
+仍然也是套<em>最小帧长</em>的公式，然后找d, L之间的函数关系即可。
+
+二、相关概念
+
+CSMA协议中包括：坚持CSMA、非坚持、p坚持。即发生碰撞的话，要么一直坚持监听、要么等待一段时间再发、要么以p概率去处理
+CSMA/CD协议我们比较熟知了，是在CSMA基础上加入了碰撞检测，它并没有题中所说的确认<em>帧</em>。
+CSMA/CA就有确认<em>帧</em>了，它是用于802.11局域网的协议，无线技术，冲突避.</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/zhangmuyan/article/details/7563117"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-4-7563117-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"4","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/zhangmuyan/article/details/7563117"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/zhangmuyan/article/details/7563117" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-4-7563117-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"4","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/zhangmuyan/article/details/7563117"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-7563117-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-7563117-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>数据<em>帧</em>最短<em>帧</em>长问题</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/zhangmuyan" target="_blank"><span class="blog-title">zhangmuyan的专栏</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">05-13</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/zhangmuyan/article/details/7563117" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-4-7563117-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"4","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/zhangmuyan/article/details/7563117"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-7563117-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-7563117-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">1.<em>以太网</em><em>帧</em>的最短<em>长度</em>为64字节，或者<em>帧</em>中的数据不得少于46个字节,其中<em>以太网</em><em>帧</em>头有18字节(<em>以太网</em>2的值为:MAC+2类型+4CRC,注意,如果是802.3的规范,它支持SNAP<em>和</em>802.3以太,其中的2个字节的类型字段就变为<em>帧</em>的<em>长度</em>),小于以上<em>长度</em>的<em>帧</em>或数据需要在<em>帧</em>中加入&ldquo;填充数据(pad)&rdquo;
+ 。
+
+
+
+&nbsp;
+
+
+2.<em>以太网</em><em>帧</em>的最长<em>长度</em>为1518字节。我们所说的MTU <em>以太网</em>一</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/chienchia/article/details/40144301"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-40144301-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/chienchia/article/details/40144301"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/chienchia/article/details/40144301" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-40144301-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/chienchia/article/details/40144301"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-40144301-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-40144301-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em><em>帧</em><em>最小帧长</em>与最大<em>帧</em>长</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/chienchia" target="_blank"><span class="blog-title">chienchia的专栏</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">10-16</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					6945
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/chienchia/article/details/40144301" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-40144301-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/chienchia/article/details/40144301"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-40144301-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-40144301-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">http://www.cnblogs.com/aixin0813/p/3310040.html
+
+
+讨论<em>以太网</em>的<em>帧</em>长，就不得不先提一下<em>以太网</em>的大名鼎鼎的CSMA/CD协议。
+
+1.1&nbsp; CSMA/CD协议
+
+CSMA/CD是英文carrier sense multiple access/collision detected 的缩写，可把它翻成&ldquo;载波监听多路访问/冲突检测&rdquo;，或&ldquo;带有冲</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_44517301/article/details/93627726"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-6-93627726-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"6","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_44517301/article/details/93627726"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_44517301/article/details/93627726" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-6-93627726-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"6","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_44517301/article/details/93627726"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-6-93627726-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-6-93627726-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>的<em>最大和</em><em>最小帧长</em>是怎样<em>计算</em>的</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_44517301" target="_blank"><span class="blog-title">ZJC&#39;博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">06-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_44517301/article/details/93627726" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-6-93627726-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"6","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_44517301/article/details/93627726"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-6-93627726-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-6-93627726-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">1、<em>以太网</em>的<em>最小帧长</em>
+前提条件：10Mbps的传输速率；载波多路复用/冲突检测（CSMA/CD）
+（1）、CSMA/CD
+（Carrier Sense Multiple Access with Collision Detection）带冲突检测的载波监听多路访问技术(载波监听多点接入/碰撞检测)。在传统的共享<em>以太网</em>中，所有的节点共享传输介质。如何保证传输介质有序、高效地为许多节点提供传输服务，就是...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/ixidof/article/details/7799891"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-7-7799891-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"7","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/ixidof/article/details/7799891"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/ixidof/article/details/7799891" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-7-7799891-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"7","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/ixidof/article/details/7799891"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-7-7799891-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-7-7799891-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>原理 之 最大<em>帧</em>长<em>和</em><em>最小帧长</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/ixidof" target="_blank"><span class="blog-title">韦编二绝</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-29</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/ixidof/article/details/7799891" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-7-7799891-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"7","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/ixidof/article/details/7799891"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-7-7799891-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-7-7799891-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">文章出处：http://blog.csdn.net/violetfeeling/article/details/4469907
+&nbsp;
+&nbsp;&nbsp;&nbsp; 在传统<em>以太网</em>中，为什么要有<em>最小帧长</em>度<em>和</em>最大<em>帧</em><em>长度</em>的限制？
+&nbsp;&nbsp;&nbsp; <em>以太网</em>（IEEE 802.3）<em>帧</em>格式：
+&nbsp;&nbsp;&nbsp; 1. 前导码：7字节0x55，一串1、0间隔，用于信号同步；
+&nbsp;&nbsp;&nbsp; 2. <em>帧</em>起始定界符：1字节0xD5( 10101011&nbsp;)，表示一</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/avtcpm1927/article/details/101622513"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-8-101622513-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"8","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/avtcpm1927/article/details/101622513"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/avtcpm1927/article/details/101622513" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-8-101622513-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"8","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/avtcpm1927/article/details/101622513"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-8-101622513-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-8-101622513-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>为什么是64字节</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/avtcpm1927" target="_blank"><span class="blog-title">avtcpm1927的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">08-17</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1034
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/avtcpm1927/article/details/101622513" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-8-101622513-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"8","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/avtcpm1927/article/details/101622513"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-8-101622513-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-8-101622513-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>为什么是64字节
+
+        
+	
+        
+            
+
+    
+<em>以太网</em><em>最小帧长</em>为什么是64字节
+
+分类：Internet2011-09-08 10:056263人阅读评论(0)收藏举报
+<em>网络</em>ciscobyte算法c测试
+
+http://apps.hi.baidu.com/...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/2301_78967994/article/details/153583342"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-9-153583342-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"9","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/2301_78967994/article/details/153583342"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/2301_78967994/article/details/153583342" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-9-153583342-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"9","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/2301_78967994/article/details/153583342"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-9-153583342-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-9-153583342-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1">CSMA/CD协议与<em>最小帧长</em>：<em>以太网</em>冲突检测的数学推导</div>
+					<div class="tag">最新发布</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/2301_78967994" target="_blank"><span class="blog-title">比较是偷走幸福的小偷</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">10-24</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					4368
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/2301_78967994/article/details/153583342" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-9-153583342-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"9","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/2301_78967994/article/details/153583342"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-9-153583342-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-9-153583342-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">CSMA/CD是<em>以太网</em>的核心协议。为什么<em>以太网</em><em>帧</em><em>最小</em>是64字节？为什么冲突后要随机等待？<em>最小帧长</em>的数学推导、二进制指数退避算法是考研408的必考<em>计算</em>题。我并没有能力让你成为<em>以太网</em>专家，我只是想让你彻底理解载波监听的工作机制、冲突检测的时间窗口、以及<em>最小帧长</em>的数学推导。每个公式都会详细推导，讲透本质。从&quot;<em>以太网</em>冲突导致丢包&quot;问题出发，剖析CSMA/CD协议的核心原理。通过载波监听的多路访问、冲突检测的争用期、以及<em>最小帧长</em>的2&tau;推导，揭秘<em>以太网</em>可靠传输的设计智慧。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/shenshaoming/article/details/103221521"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-10-103221521-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"10","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/shenshaoming/article/details/103221521"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/shenshaoming/article/details/103221521" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-10-103221521-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"10","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/shenshaoming/article/details/103221521"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-10-103221521-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-10-103221521-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>计算</em>机<em>网络</em>&mdash;&mdash;各种时延<em>和</em><em>最小帧长</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/shenshaoming" target="_blank"><span class="blog-title">shenshaoming的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">11-24</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					7765
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/shenshaoming/article/details/103221521" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-10-103221521-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"10","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/shenshaoming/article/details/103221521"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-10-103221521-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-10-103221521-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">各种时延的理解：时延：是数据（一个报文或分组，甚至比特）从<em>网络</em>或链路的一端传送到另一端所需要的时间。&nbsp;总时延=发送时延+传播时延+处理时延+排队时延发送时延：是从发送数据<em>帧</em>的第一个比特算起，到该<em>帧</em>的最后一个比特发送完毕所需的时间。发送时延=数据<em>帧</em><em>长度</em>(b) /信道带宽(b/s) [信道带宽就是数据率...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://devpress.csdn.net/v1/article/detail/131583365"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~activity-11-131583365-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"11","strategy":"2~default~ElasticSearch~activity","dest":"https://devpress.csdn.net/v1/article/detail/131583365"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://devpress.csdn.net/v1/article/detail/131583365" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~activity-11-131583365-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"11","strategy":"2~default~ElasticSearch~activity","dest":"https://devpress.csdn.net/v1/article/detail/131583365"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7Eactivity-11-131583365-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7Eactivity-11-131583365-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>为什么是64字节？是如何<em>计算</em>的？</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_57345314" target="_blank"><span class="blog-title">qq_57345314的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-06</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					4703
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://devpress.csdn.net/v1/article/detail/131583365" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~activity-11-131583365-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"11","strategy":"2~default~ElasticSearch~activity","dest":"https://devpress.csdn.net/v1/article/detail/131583365"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7Eactivity-11-131583365-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7Eactivity-11-131583365-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>为64字节的原因</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/violetfeeling/article/details/4469907"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-12-4469907-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"12","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/violetfeeling/article/details/4469907"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/violetfeeling/article/details/4469907" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-12-4469907-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"12","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/violetfeeling/article/details/4469907"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-12-4469907-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-12-4469907-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>原理 最大<em>帧</em>长 <em>最小帧长</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/violetfeeling" target="_blank"><span class="blog-title">violetfeeling的专栏</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">08-21</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					2万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/violetfeeling/article/details/4469907" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-12-4469907-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"12","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/violetfeeling/article/details/4469907"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-12-4469907-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-12-4469907-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">http://www.cnblogs.com/yhl1234/archive/2009/02/03/1192085.html
+&nbsp;
+在传统<em>以太网</em>中,为什么要有<em>最小帧长</em>度<em>和</em>最大<em>帧</em><em>长度</em>的限制?
+<em>以太网</em>(IEEE 802.3)<em>帧</em>格式：
+1、前导码：7字节0x55,一串1、0间隔，用于信号同步
+2、<em>帧</em>起始定界符：1字节0xD5(10101011)，表示一<em>帧</em>开始
+3、DA(目的MAC)：6字节</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/qq_39980997/article/details/149854899"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-13-149854899-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"13","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854899"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/qq_39980997/article/details/149854899" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-13-149854899-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"13","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854899"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-13-149854899-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-13-149854899-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>网络</em>中的<em>最小帧长</em>与最大<em>帧</em>长</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_39980997" target="_blank"><span class="blog-title">qq_39980997的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">08-02</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1773
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/qq_39980997/article/details/149854899" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-13-149854899-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"13","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854899"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-13-149854899-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-13-149854899-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">摘要： <em>最小帧长</em>与最大<em>帧</em>长是数据链路层的关键参数，共同保障<em>网络</em>可靠性与效率。<em>最小帧长</em>通过确保冲突检测时间（如<em>以太网</em>64字节），防止短<em>帧</em>发送时无法感知冲突；最大<em>帧</em>长（如标准<em>以太网</em>1518字节）则避免信道独占，平衡多设备公平性。不同<em>网络</em>场景（如千兆<em>以太网</em>、Wi-Fi）对<em>帧</em>长的限制各异，需兼顾硬件兼容性与传输效率。二者的协同作用体现在：<em>最小帧长</em>是冲突检测的安全底线，最大<em>帧</em>长则是资源分配的调节阀，共同优化<em>网络</em>性能与稳定性。理解<em>帧</em>长设计原理有助于解决实际<em>网络</em>问题（如延迟、丢包）并提升架构设计合理性。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://bingw.blog.csdn.net/article/details/53497324"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-14-53497324-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"14","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/53497324"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://bingw.blog.csdn.net/article/details/53497324" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-14-53497324-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"14","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/53497324"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-14-53497324-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-14-53497324-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>与TCP/IP的联合运用</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/u011240016" target="_blank"><span class="blog-title">Bing&#39;s Blog</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">12-07</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					2982
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://bingw.blog.csdn.net/article/details/53497324" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-14-53497324-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"14","strategy":"2~default~ElasticSearch~Rate","dest":"https://bingw.blog.csdn.net/article/details/53497324"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-14-53497324-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-14-53497324-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>以太网</em><em>最小帧长</em>与TCP/IP的联合运用@(<em>计算</em>机<em>网络</em>)
+  在平均往返时延RTT = 20ms的快速<em>以太网</em>上运行TCP/IP协议，假设TCP的最大窗口尺寸是64KB，问此时TCP协议所能支持的最大数据传输率约是（C） 
+  A. 3.2Mbit/s 
+  B. 12.8 Mbit/s 
+  C. 25.6Mbit/s 
+  D. 51.2Mbit/s
+分析：在数据链路层具体讨论过最短<em>帧</em>长的问题。没有</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/qq_39980997/article/details/149854196"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-15-149854196-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"15","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854196"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/qq_39980997/article/details/149854196" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-15-149854196-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"15","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854196"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-15-149854196-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-15-149854196-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>最小帧长</em>：数据链路层的&ldquo;安全红线&rdquo;与<em>计算</em>逻辑</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_39980997" target="_blank"><span class="blog-title">qq_39980997的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">08-02</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1277
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/qq_39980997/article/details/149854196" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-15-149854196-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"15","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/qq_39980997/article/details/149854196"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-15-149854196-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-15-149854196-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">摘要：<em>最小帧长</em>是数据链路层协议（如CSMA/CD<em>以太网</em>）的关键设计参数，用于确保可靠冲突检测。其核心原理是保证<em>帧</em>的发送时间&ge;信号往返传播延迟，避免设备在未检测到冲突时就完成发送。通过公式 ( L_{min} \geq \frac{2D \cdot R}{v} ) <em>计算</em>，10Mbps<em>以太网</em>的<em>最小帧长</em>定为64字节（512比特）。若<em>帧</em>太短，会导致冲突&ldquo;隐形&rdquo;，破坏<em>网络</em>可靠性。现代全双工<em>以太网</em>虽无需冲突检测，但仍保留<em>最小帧长</em>以兼容协议。这一参数是共享介质<em>网络</em>中平衡效率与公平的&ldquo;安全底线&rdquo;。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/u013669912/article/details/140139761"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-16-140139761-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"16","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/u013669912/article/details/140139761"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/u013669912/article/details/140139761" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-16-140139761-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"16","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/u013669912/article/details/140139761"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-16-140139761-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-16-140139761-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1">CSMA/CD 机制 / 工作流程 / <em>最小帧长</em> / 传播时延 | <em>以太网</em>线缆标准</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/u013669912" target="_blank"><span class="blog-title">u013669912的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-03</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					4097
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/u013669912/article/details/140139761" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-16-140139761-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"16","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/u013669912/article/details/140139761"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-16-140139761-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-16-140139761-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">&hellip;</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_56052578/article/details/149220276"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-17-149220276-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"17","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_56052578/article/details/149220276"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_56052578/article/details/149220276" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-17-149220276-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"17","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_56052578/article/details/149220276"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-17-149220276-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-17-149220276-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>以太网</em>规范</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_56052578" target="_blank"><span class="blog-title">weixin_56052578的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-11</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					1187
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_56052578/article/details/149220276" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~ElasticSearch~Rate-17-149220276-blog-78615551.235^v43^pc_blog_bottom_relevance_base3\",\"dist_request_id\":\"1789706752489_58061\"}","dist_request_id":"1789706752489_58061","ab_strategy":"landing_bge_commercial_es","index":"17","strategy":"2~default~ElasticSearch~Rate","dest":"https://blog.csdn.net/weixin_56052578/article/details/149220276"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-17-149220276-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EElasticSearch%7ERate-17-149220276-blog-78615551.235%5Ev43%5Epc_blog_bottom_relevance_base3'>
+				<div class="desc ellipsis-online ellipsis-online-1">摘要：本文系统介绍了<em>以太网</em><em>最小帧长</em><em>计算</em>公式(Lmin=2R*d/v)及其应用，通过例题解析了10Mb/s<em>和</em>100Mb/s<em>网络</em>的<em>最小帧长</em><em>计算</em>。详细说明了<em>以太网</em><em>帧</em>结构(64-1518字节)、TCP/IP数据封装限制(最大1480字节)，以及各类<em>以太网</em>标准：802.3(10M)、802.3u(100M)、802.3z/ab(1G)<em>和</em>802.3ae(10G)，重点比较了不同介质类型的传输特性。其中千兆<em>以太网</em>1000BASE-LX传输距离最长，万兆<em>以太网</em>10GBASE-ER单模光纤可达40公里。文章还梳理了IEEE8</div>
+			</a>
+		</div>
+	</div>
+</div>
+              </div>
+<div class="blog-footer-bottom" style="margin-top:10px;"></div>
+
+          </main>
+<aside class="blog_container_aside">
+<div id="asideProfile" class="aside-box active">
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/u012503786" target="_blank" data-report-click='{"mod":"popu_379","spm":"3001.4121","dest":"https://blog.csdn.net/u012503786","ab":"new"}'>
+                <img src="https://profile-avatar.csdnimg.cn/c45058b3092d4ac1ae76b3c102ee2304_u012503786.jpg!1" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex flex-column profile-intro-name-box">
+            <div class="profile-intro-name-boxTop">
+                <a href="https://blog.csdn.net/u012503786" target="_blank" class="" id="uid" title="hanfs390" data-report-click='{"mod":"popu_379","spm":"3001.4122","dest":"https://blog.csdn.net/u012503786","ab":"new"}'>
+                    <span class="name" username="u012503786">hanfs390</span>
+                </a>
+            </div>
+            <div class="profile-intro-name-boxFooter-new">
+              <p class="profile-intro-name-leve">
+                <span>
+                  博客等级
+                </span>
+                  <img class="level" src="https://csdnimg.cn/identity/blog5.png">
+              </p>
+                <span class="profile-intro-name-years" title="已加入 CSDN 13年">码龄13年</span>
+               
+            </div>
+        </div>
+    </div>
+    <div class="profile-intro-rank-information">
+      <dl>
+        <a href="https://blog.csdn.net/u012503786" data-report-click='{"mod":"1598321000_001","spm":"3001.4310"}' data-report-query="t=1">  
+            <dd><span >69</span></dd>
+            <dt>原创</dt>
+        </a>
+      </dl>
+       <dl title="230">
+        <dd>230</dd>
+        <dt>点赞</dt>
+      </dl>
+       <dl title="1274">
+        <dd>1274</dd>
+        <dt>收藏</dt>
+      </dl>
+      <dl id="fanBox" title="176">
+        <dd><span id="fan">176</span></dd>
+        <dt>粉丝</dt>
+      </dl>
+    </div>
+    <div class="profile-intro-name-boxOpration">
+        <div class="opt-letter-watch-box"> 
+            <a class="personal-watch bt-button" id="btnAttent" >关注</a>  
+        </div>
+        <div class="opt-letter-watch-box">
+        <a rel="nofollow" class="bt-button personal-letter" href="https://im.csdn.net/chat/u012503786" target="_blank" rel="noopener">私信</a>
+        </div>
+    </div>
+</div>
+  <div class="swiper-remuneration-container" id="swiper-remuneration-container">
+    <div class="swiper-wrapper">
+        <!-- 这里可以添加多个Swiper幻灯片 -->
+          <div class="swiper-slide">
+            <a data-report-click='{"spm":"3001.9728","extra":{"index":"0"}}' data-report-swiper='{"spm":"3001.9728","extra":{"index":"0"}}' href="https://mp.csdn.net/vip?utm_source=902253762" target="_blank">
+              <img src="https://i-operation.csdnimg.cn/images/c2ca6f6dc1c54f1e8dd2d1e501a53d26.png" alt="">
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a data-report-click='{"spm":"3001.9728","extra":{"index":"1"}}' data-report-swiper='{"spm":"3001.9728","extra":{"index":"1"}}' href="https://i.csdn.net/#/geek-star-fun-pack?utm_source=260901_vip_blogleftbanner" target="_blank">
+              <img src="https://i-operation.csdnimg.cn/images/8ab319a97daa41daa3bc284efd27048e.png" alt="">
+            </a>
+          </div>
+    </div>
+    <div class="swiper-remuneration-pagination"></div>
+    <!-- 如果需要导航按钮 -->
+    <div class="swiper-remuneration-button-prev"></div>
+    <div class="swiper-remuneration-button-next"></div>
+  </div>
+
+
+
+<div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list">
+			<li>
+				<a href="https://blog.csdn.net/u012503786/article/details/78783874" target="_blank"  data-report-click='{"mod":"popu_541","spm":"3001.4139","dest":"https://blog.csdn.net/u012503786/article/details/78783874","ab":"new"}'>
+				[802.11]IEEE 802.11的帧格式介绍
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">53077</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/u012503786/article/details/78615551" target="_blank"  data-report-click='{"mod":"popu_541","spm":"3001.4139","dest":"https://blog.csdn.net/u012503786/article/details/78615551","ab":"new"}'>
+				[网络基础]以太网的最大和最小帧长是怎样计算的
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">41506</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/u012503786/article/details/78643036" target="_blank"  data-report-click='{"mod":"popu_541","spm":"3001.4139","dest":"https://blog.csdn.net/u012503786/article/details/78643036","ab":"new"}'>
+				[TCP/IP]路由表和路由选路原则
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">30904</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/u012503786/article/details/79296522" target="_blank"  data-report-click='{"mod":"popu_541","spm":"3001.4139","dest":"https://blog.csdn.net/u012503786/article/details/79296522","ab":"new"}'>
+				IEEE 802.1X-PEAP认证过程分析（抓包）
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">26440</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/u012503786/article/details/89053109" target="_blank"  data-report-click='{"mod":"popu_541","spm":"3001.4139","dest":"https://blog.csdn.net/u012503786/article/details/89053109","ab":"new"}'>
+				ARM和MIPS架构
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">23939</span>
+                </a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="asideCategory" class="aside-box aside-box-column flexible-box-new">
+    <h3 class="aside-title">分类专栏</h3>
+    <div class="aside-content" id="aside-content">
+        <ul>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9963503.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9963503.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        openwrt
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9694848.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9694848.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        golang
+                    </span>
+                </a>
+                <span class="special-column-num">8篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9510862.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9510862.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        uboot
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_7302506.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_7302506.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        网络
+                    </span>
+                </a>
+                <span class="special-column-num">20篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8641747.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8641747.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        工具
+                    </span>
+                </a>
+                <span class="special-column-num">9篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8700262.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8700262.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        协议
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8814780.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8814780.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        基础
+                    </span>
+                </a>
+                <span class="special-column-num">20篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8924395.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8924395.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756780.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        iptables
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9198681.html" data-report-click='{"mod":"popu_537","spm":"3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9198681.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756916.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <span class="title oneline">
+                        linux
+                    </span>
+                </a>
+                <span class="special-column-num">15篇</span>
+            </li>
+        </ul>
+    </div>
+    <p class="text-center">
+      <a class="flexible-btn-new" data-report-click='{"spm":"3001.10779","strategy":"展开全部"}' data-maxheight="0" data-minheight="208px" data-fbox="#aside-content" data-flag="flag"><span class="text">展开全部</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-bot-White.png" alt=""></a>
+      <a class="flexible-btn-new-close" data-report-click='{"spm":"3001.10779","strategy":"收起"}' data-minheight="208px" data-fbox="#aside-content" data-scroll="true" data-flag="flag"><span class="text">收起</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-top-White.png" alt=""></a>
+    </p>
+</div>
+  <div class="article-previous" id="article-previous">
+      <dl data-report-click='{"spm":"3001.10752","extend1":"上一篇"}' data-report-view='{"spm":"3001.10752","extend1":"上一篇"}'>
+          <dt>
+              上一篇：
+          </dt>
+          <dd>
+            <a href="https://blog.csdn.net/u012503786/article/details/78601276" data-report-query="spm=3001.10752">
+              [网络基础]网络设备简单介绍（网络基础知识）
+            </a>
+          </dd>
+      </dl>
+      <dl class="next" data-report-click='{"spm":"3001.10796","extend1":"下一篇"}' data-report-view='{"spm":"3001.10796","extend1":"下一篇"}'>
+          <dt>
+            下一篇：
+          </dt>
+          <dd >
+            <a href="https://blog.csdn.net/u012503786/article/details/78643036" data-report-query="spm=3001.10796">
+              [TCP/IP]路由表和路由选路原则
+            </a>
+          </dd>
+      </dl>
+  </div>
+<div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/u012503786/article/details/79296522#comments_40141227" data-report-click='{"mod":"popu_542","spm":"3001.4231","dest":"https://blog.csdn.net/u012503786/article/details/79296522#comments_40141227","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"3001.4231","dest":"https://blog.csdn.net/u012503786/article/details/79296522#comments_40141227","ab":"new"}'>IEEE 802.1X-PEAP认证过程分析（抓包）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/weixin_64829173" class="user-name" target="_blank">菜鸟贴贴: </a>
+                    <span class="code-comments">楼主你好呀，请问怎么抓的呢？我使用鲨鱼那个软件没有抓到</span>
+                </p>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">大家在看</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list">
+			<li>
+				<a href="https://blog.csdn.net/GARYTANBEST/article/details/165859203" target="_blank"  data-report-click='{"spm":"3001.10093","dest":"https://blog.csdn.net/GARYTANBEST/article/details/165859203","strategy":"202_1052723-4553122_RCMD","ab":"new"}' data-report-view='{"spm":"3001.10093","dest":"https://blog.csdn.net/GARYTANBEST/article/details/165859203","strategy":"202_1052723-4553122_RCMD","ab":"new"}'>
+				用AIPPT接口自动生成周报PPT
+        </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/FWZN0818/article/details/165846999" target="_blank"  data-report-click='{"spm":"3001.10093","dest":"https://blog.csdn.net/FWZN0818/article/details/165846999","strategy":"202_1052723-4552724_RCMD","ab":"new"}' data-report-view='{"spm":"3001.10093","dest":"https://blog.csdn.net/FWZN0818/article/details/165846999","strategy":"202_1052723-4552724_RCMD","ab":"new"}'>
+				工业人形机器人双臂协作系统
+        </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/CSDN_224022/article/details/165299039" target="_blank"  data-report-click='{"spm":"3001.10093","dest":"https://blog.csdn.net/CSDN_224022/article/details/165299039","strategy":"202_1052723-4553111_RCMD","ab":"new"}' data-report-view='{"spm":"3001.10093","dest":"https://blog.csdn.net/CSDN_224022/article/details/165299039","strategy":"202_1052723-4553111_RCMD","ab":"new"}'>
+				医学背景转AI+医疗实战路径
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">270</span>
+        </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/rrwtp_net/article/details/165293212" target="_blank"  data-report-click='{"spm":"3001.10093","dest":"https://blog.csdn.net/rrwtp_net/article/details/165293212","strategy":"202_1052723-4552782_RCMD","ab":"new"}' data-report-view='{"spm":"3001.10093","dest":"https://blog.csdn.net/rrwtp_net/article/details/165293212","strategy":"202_1052723-4552782_RCMD","ab":"new"}'>
+				微信摄影投票搭建教程
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">166</span>
+        </a>
+			</li>
+			<li>
+				<a href="https://blog.csdn.net/baronbool/article/details/165278694" target="_blank"  data-report-click='{"spm":"3001.10093","dest":"https://blog.csdn.net/baronbool/article/details/165278694","strategy":"202_1052723-4552933_RCMD","ab":"new"}' data-report-view='{"spm":"3001.10093","dest":"https://blog.csdn.net/baronbool/article/details/165278694","strategy":"202_1052723-4552933_RCMD","ab":"new"}'>
+				Python内存泄漏定位双工具实战
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt="">
+					<span class="read">802</span>
+        </a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="asideArchive" class="aside-box" style="display:block!important; width:300px;">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix">
+            <li class="clearfix">
+            <a href="https://blog.csdn.net/u012503786/article/details/135366208" target="_blank" data-report-click='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/135366208","ab":"left"}' data-report-view='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/135366208","ab":"left"}'>使用find命令查找大小超过5M的文件</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://blog.csdn.net/u012503786/article/details/134799685" target="_blank" data-report-click='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/134799685","ab":"left"}' data-report-view='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/134799685","ab":"left"}'>[adbd] adb添加密码登录SHELL</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://blog.csdn.net/u012503786/article/details/134533197" target="_blank" data-report-click='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/134533197","ab":"left"}' data-report-view='{"mod":"popu_382","spm":"3001.4136","dest":"https://blog.csdn.net/u012503786/article/details/134533197","ab":"left"}'>[ 加密 ] SHA256</a>
+            </li>
+        </ul>
+        <div class="archive-bar"></div>
+        <div class="archive-box">
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2024&amp;month=01" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2024&amp;month=01"}'><span class="year">2024年</span><span class="num">1篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2023&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2023&amp;month=12"}'><span class="year">2023年</span><span class="num">7篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2022&amp;month=11" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2022&amp;month=11"}'><span class="year">2022年</span><span class="num">6篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2021&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2021&amp;month=12"}'><span class="year">2021年</span><span class="num">10篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2020&amp;month=11" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2020&amp;month=11"}'><span class="year">2020年</span><span class="num">20篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2019&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2019&amp;month=12"}'><span class="year">2019年</span><span class="num">18篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2018&amp;month=03" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2018&amp;month=03"}'><span class="year">2018年</span><span class="num">4篇</span></a></div>
+                <div class="archive-list-item"><a href="https://blog.csdn.net/u012503786?type=blog&amp;year=2017&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"3001.4138","ab":"new","dest":"https://blog.csdn.net/u012503786?type=blog&amp;year=2017&amp;month=12"}'><span class="year">2017年</span><span class="num">7篇</span></a></div>
+        </div>
+    </div>
+</div>
+    <!-- 详情页显示目录 -->
+<div class="aside-box cknows-side-card js-aside-cknows">
+  <div class="cknows-side-header">
+    <div class="cknows-side-header-row">
+      <div class="cknows-side-logo-wrap">
+        <img class="cknows-side-logo" src="https://csdnimg.cn/release/blogv2/dist/pc/img/c-blog-slidelogo-White.png" alt="C知道">
+      </div>
+      <p class="cknows-side-brand">· AI 阅读助手</p>
+    </div>
+  </div>
+  <div class="swiper cknows-side-swiper">
+    <div class="swiper-wrapper cknows-swiper-wrapper"></div>
+    <div class="cknows-side-pagination swiper-pagination"></div>
+  </div>
+</div>
+<!--文章目录-->
+<div id="asidedirectory" class="aside-box">
+    <div class='groupfile groupfile-active' id="directory">
+        <h3 class="aside-title">目录</h3>
+        <div class="align-items-stretch group_item" id="align-items-stretch">
+            <div class="pos-box">
+            <div class="scroll-box">
+                <div class="toc-box"></div>
+            </div>
+            </div>
+        </div>
+          <p class="flexible-btn-new" id="flexible-btn-groupfile" data-report-click='{"spm":"3001.10780","strategy":"展开全部"}' data-minheight="117px" data-maxheight="446px" data-fbox="#align-items-stretch"><span class="text">展开全部</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-bot-White.png" alt=""></p>
+          <p class="flexible-btn-new-close close" data-report-click='{"spm":"3001.10780","strategy":"收起"}'  data-minheight="117px" data-maxheight="446px" data-fbox="#align-items-stretch"><span class="text">收起</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-top-White.png" alt=""></p>
+    </div>
+</div>
+<div class="gitcode-qc-left-box aside-box" data-report-click='{"spm":"3001.11256", "extra":"{\"position\":\"left\"}"}'></div>
+</aside>
+
+
+
+        </div>
+<div class="recommend-right align-items-stretch clearfix article-component-material-third-column" id="rightAside" data-type="recommend">
+    <aside class="recommend-right_aside">
+            <div class="rightside-fixed-hide">
+      </div>
+        <div id="recommend-right" >
+<div class="aside-box cknows-side-card js-aside-cknows">
+  <div class="cknows-side-header">
+    <div class="cknows-side-header-row">
+      <div class="cknows-side-logo-wrap">
+        <img class="cknows-side-logo" src="https://csdnimg.cn/release/blogv2/dist/pc/img/c-blog-slidelogo-White.png" alt="C知道">
+      </div>
+      <p class="cknows-side-brand">· AI 阅读助手</p>
+    </div>
+  </div>
+  <div class="swiper cknows-side-swiper">
+    <div class="swiper-wrapper cknows-swiper-wrapper"></div>
+    <div class="cknows-side-pagination swiper-pagination"></div>
+  </div>
+</div>
+          <div class='flex-column aside-box groupfile groupfile-active ' id="groupfile">
+              <div class="groupfile-div">
+              <h3 class="aside-title">目录</h3>
+              <div class="align-items-stretch group_item" id="align-items-stretch-right">
+                  <div class="pos-box">
+                      <div class="scroll-box">
+                          <div class="toc-box"></div>
+                      </div>
+                  </div>
+              </div>
+                <p class="flexible-btn-new" id="flexible-btn-groupfile" data-report-click='{"spm":"3001.10782","strategy":"展开全部"}' data-traigger="true" data-minheight="117px" data-maxheight="446px" data-fbox="#align-items-stretch-right"><span class="text">展开全部</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-bot-White.png" alt=""></p>
+                <p class="flexible-btn-new-close close" data-report-click='{"spm":"3001.10782","strategy":"收起"}' data-traigger="true"  data-minheight="117px" data-maxheight="446px" data-fbox="#align-items-stretch-right"><span class="text">收起</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-top-White.png" alt=""></p>
+              </div>
+          </div>
+          <div class="gitcode-qc-right-box aside-box" data-report-click='{"spm":"3001.11256", "extra":"{\"position\":\"right\"}"}'></div>
+  <div class="article-previous" id="article">
+      <dl data-report-click='{"spm":"3001.10752","extend1":"上一篇"}' data-report-view='{"spm":"3001.10752","extend1":"上一篇"}'>
+          <dt>
+              上一篇：
+          </dt>
+          <dd>
+            <a href="https://blog.csdn.net/u012503786/article/details/78601276" data-report-query="spm=3001.10752">
+              [网络基础]网络设备简单介绍（网络基础知识）
+            </a>
+          </dd>
+      </dl>
+      <dl class="next" data-report-click='{"spm":"3001.10796","extend1":"下一篇"}' data-report-view='{"spm":"3001.10796","extend1":"下一篇"}'>
+          <dt>
+            下一篇：
+          </dt>
+          <dd >
+            <a href="https://blog.csdn.net/u012503786/article/details/78643036" data-report-query="spm=3001.10796">
+              [TCP/IP]路由表和路由选路原则
+            </a>
+          </dd>
+      </dl>
+  </div>
+          <div class='aside-box kind_person d-flex flex-column flexible-box-new' >
+                  <h3 class="aside-title">分类专栏</h3>
+                  <div class="align-items-stretch kindof_item" id="kind_person_column">
+                      <div class="aside-content" id="aside-content-column">
+                          <ul>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9963503.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9963503.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          openwrt
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">3篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9694848.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9694848.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          golang
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">8篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9510862.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9510862.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          uboot
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">1篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_7302506.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_7302506.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          网络
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">20篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8641747.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8641747.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          工具
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">9篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8700262.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8700262.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          协议
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">1篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8814780.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8814780.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          基础
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">20篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_8924395.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_8924395.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756780.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          iptables
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">3篇</span>
+                              </li>
+                              <li>
+                                  <a class="clearfix special-column-name"  href="https://blog.csdn.net/u012503786/category_9198681.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/u012503786/category_9198681.html","ab":"new"}'>
+                                      <div class="special-column-bar "></div>
+                                      <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756916.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                      <span class="">
+                                          linux
+                                      </span>
+                                  </a>
+                                  <span class="special-column-num">15篇</span>
+                              </li>
+                          </ul>
+                      </div>
+                        <p class="text-center">
+                          <a class="flexible-btn-new" data-report-click='{"spm":"3001.10783","strategy":"展开全部"}' data-traigger="true" data-maxheight="0" data-minheight="208px" data-fbox="#aside-content-column" data-flag="flag"><span class="text">展开全部</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-bot-White.png" alt=""></a>
+                          <a class="flexible-btn-new-close" data-report-click='{"spm":"3001.10783","strategy":"收起"}'data-traigger="true"  data-minheight="208px" data-fbox="#aside-content-column" data-scroll="true" data-flag="flag"><span class="text">收起</span> <img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowup-line-top-White.png" alt=""></a>
+                        </p>
+                  </div>
+          </div>
+        </div>
+    </aside>
+</div>
+<div class="recommend-right1  align-items-stretch clearfix" id="rightAsideConcision" data-type="recommend">
+    <aside class="recommend-right_aside">
+        <div id="recommend-right-concision" >
+            <div class='flex-column aside-box groupfile' id="groupfileConcision">
+                <div class="groupfile-div1">
+                <h3 class="aside-title">目录</h3>
+                <div class="align-items-stretch group_item">
+                    <div class="pos-box">
+                        <div class="scroll-box">
+                            <div class="toc-box"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+      </div>
+      <div class="mask-dark"></div>
+        
+      <div class="skin-boxshadow"></div>
+      <div class="directory-boxshadow"></div>
+<div class="comment-side-box-shadow comment-side-tit-close" id="commentSideBoxshadow">
+<div class="comment-side-content">
+	<div class="comment-side-tit">
+		<div class="comment-side-tit-count">评论&nbsp;<span class="count">2</span></div>
+	<img class="comment-side-tit-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png"></div>
+  <div id="pcCommentSideBox" class="comment-box comment-box-new2" style="display:block">
+    <div class="comment-edit-box d-flex">
+      <div class="user-img">
+      </div>
+      <form id="commentform">
+        <textarea class="comment-content" name="comment_content" id="comment_content" placeholder="说说你的看法，或者提个问题" maxlength="1000"></textarea>
+        <div class="comment-reward-box" style="background-image: url('https://img-home.csdnimg.cn/images/20230131025301.png');">
+          <a class="btn-remove-reward"></a>
+          <div class="form-reward-box">
+            <div class="info">
+              成就一亿技术人!
+            </div>
+            <div class="price-info">
+              拼手气红包<span class="price">6.0元</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-operate-box">
+          <div class="comment-operate-l">
+            <span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span>
+          </div>
+          <div class="comment-operate-c">
+            &nbsp;
+          </div>
+          <div class="comment-operate-r">
+            <div class="comment-operate-item comment-emoticon">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentEmotionIcon.png" alt="表情包">
+              <span class="comment-operate-tip">插入表情</span>
+              <div class="comment-emoticon-box comment-operate-isshow">
+                <div class="comment-emoticon-img-box"></div>
+              </div>
+            </div>
+            <div class="comment-operate-item comment-code">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentCodeIcon.png" alt="表情包">
+              <span class="comment-operate-tip">代码片</span>
+              <div class="comment-code-box comment-operate-isshow">
+                <ul id="commentCode">
+                  <li><a data-code="html">HTML/XML</a></li>
+                  <li><a data-code="objc">objective-c</a></li>
+                  <li><a data-code="ruby">Ruby</a></li>
+                  <li><a data-code="php">PHP</a></li>
+                  <li><a data-code="csharp">C</a></li>
+                  <li><a data-code="cpp">C++</a></li>
+                  <li><a data-code="javascript">JavaScript</a></li>
+                  <li><a data-code="python">Python</a></li>
+                  <li><a data-code="java">Java</a></li>
+                  <li><a data-code="css">CSS</a></li>
+                  <li><a data-code="sql">SQL</a></li>
+                  <li><a data-code="plain">其它</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="comment-operate-item">
+              <input type="hidden" id="comment_replyId" name="comment_replyId">
+              <input type="hidden" id="article_id" name="article_id" value="78615551">
+              <input type="hidden" id="comment_userId" name="comment_userId" value="">
+              <input type="hidden" id="commentId" name="commentId" value="">
+              <a data-report-click='{"mod":"1582594662_003","spm":"1001.2101.3001.4227","ab":"new","extra":{"type":"button"}}' data-report-view='{"mod":"1582594662_003","spm":"1001.2101.3001.4227","ab":"new","extra":{"type":"button"}}'>
+              <input type="submit" class="btn-comment btn-comment-input" value="评论">
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+		<div class="comment-list-container">
+			<div class="comment-list-box comment-operate-item">
+			</div>
+			<div id="lookGoodComment" class="look-good-comment side-look-comment">
+				<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownWhite.png" alt=""></a>
+			</div>
+			<div id="lookFlodComment" class="look-flod-comment">
+					<span class="count"></span>&nbsp;条评论被折叠&nbsp;<a class="look-more-flodcomment">查看</a>
+			</div>
+			<div class="opt-box text-center">
+				<div class="btn btn-sm btn-link-blue" id="btnMoreComment"></div>
+			</div>
+		</div>
+	</div>
+	<div id="pcFlodCommentSideBox" class="pc-flodcomment-sidebox">
+		<div class="comment-fold-tit"><span id="lookUnFlodComment" class="back"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowLeftWhite.png" alt=""></span>被折叠的&nbsp;<span class="count"></span>&nbsp;条评论
+		 <a href="https://blogdev.blog.csdn.net/article/details/122245662" class="tip" target="_blank">为什么被折叠?</a>
+		 <a href="https://bbs.csdn.net/forums/FreeZone" class="park" target="_blank">
+		 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/iconPark.png">到【灌水乐园】发言</a>                                
+		</div>
+		<div class="comment-fold-content"></div>
+		<div id="lookBadComment" class="look-bad-comment side-look-comment">
+			<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownWhite.png" alt=""></a>
+		</div>
+	</div>
+</div>
+<div class="comment-rewarddialog-box">
+  <div class="form-box">
+    <div class="title-box">
+      添加红包
+      <a class="btn-form-close"></a>
+    </div>
+    <form id="commentRewardForm">
+      <div class="ipt-box">
+        <label for="txtName">祝福语</label>
+        <div class="ipt-btn-box">
+          <input type="text" name="name" id="txtName" autocomplete="off" maxlength="50">
+          <a class="btn-ipt btn-random"></a>
+        </div>
+        <p class="notice">请填写红包祝福语或标题</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtSendAmount">红包数量</label>
+        <div class="ipt-txt-box">
+          <input type="text" name="sendAmount" maxlength="4" id="txtSendAmount" placeholder="请填写红包数量(最小10个)" autocomplete="off">
+          <span class="after-txt">个</span>
+        </div>
+        <p class="notice">红包个数最小为10个</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtMoney">红包总金额</label>
+        <div class="ipt-txt-box error">
+          <input type="text" name="money" maxlength="5" id="txtMoney" placeholder="请填写总金额(最低5元)" autocomplete="off">
+          <span class="after-txt">元</span>
+        </div>
+        <p class="notice">红包金额最低5元</p>
+      </div>
+      <div class="balance-info-box">
+        <label>余额支付</label>
+        <div class="balance-info">
+          当前余额<span class="balance">3.43</span>元
+          <a href="https://i.csdn.net/#/wallet/balance/recharge" class="link-charge" target="_blank">前往充值 ></a>
+        </div>
+      </div>
+      <div class="opt-box">
+        <div class="pay-info">
+          需支付：<span class="price">10.00</span>元
+        </div>
+        <button type="button" class="ml-auto btn-cancel">取消</button>
+        <button type="button" class="ml8 btn-submit" disabled="true">确定</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+
+<div class="redEnvolope" id="redEnvolope">
+  <div class="env-box">
+    <div class="env-container">
+      <div class="pre-open" id="preOpen">
+        <div class="top">
+          <header>
+            <img class="clearTpaErr" :src="redpacketAuthor.avatar" alt="" />
+            <div class="author">成就一亿技术人!</div>
+          </header>
+          <div class="bot-icon"></div>
+        </div>
+        <footer>
+          <div class="red-openbtn open-start"></div>
+          <div class="tip">
+            领取后你会自动成为博主和红包主的粉丝
+            <a class="rule" target="_blank">规则</a>
+          </div>
+        </footer>
+      </div>
+      <div class="opened" id="opened">
+        <div class="bot-icon">
+          <header>
+            <a class="creatorUrl" href="" target="_blank">
+              <img class="clearTpaErr" src="https://profile-avatar.csdnimg.cn/default.jpg!2" alt="" />
+            </a>
+            <div class="author">
+              <div class="tt">hope_wisdom</div> 发出的红包
+            </div>
+          </header>
+        </div>
+        <div class="receive-box">
+          <header></header>
+          <div class="receive-list">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="close-btn"></div>
+  </div>
+</div>
+      
+      <div class="pay-code">
+      <div class="pay-money">实付<span class="pay-money-span" data-nowprice='' data-oldprice=''>元</span></div>
+      <div class="content-blance"><a class="blance-bt" href="javascript:;">使用余额支付</a></div>
+      <div class="content-code">
+        <div id="payCode" data-id="">
+          <div class="renovate">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png">
+            <span>点击重新获取</span>
+          </div>
+        </div>
+        <div class="pay-style"><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/weixin.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/zhifubao.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/jingdong.png"></span><span class="text">扫码支付</span></div>
+      </div>
+      <div class="bt-close">
+        <svg t="1567152543821" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10924" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12">
+          <defs>
+            
+          </defs>
+          <path d="M512 438.378667L806.506667 143.893333a52.032 52.032 0 1 1 73.6 73.621334L585.621333 512l294.485334 294.485333a52.074667 52.074667 0 0 1-73.6 73.642667L512 585.621333 217.514667 880.128a52.053333 52.053333 0 1 1-73.621334-73.642667L438.378667 512 143.893333 217.514667a52.053333 52.053333 0 1 1 73.621334-73.621334L512 438.378667z" fill="" p-id="10925"></path>
+        </svg>
+      </div>
+      <div class="pay-balance">
+        <input type="radio" class="pay-code-radio" data-type="details">
+        <span class="span">钱包余额</span>
+          <span class="balance" style="color:#FC5531;font-size:14px;">0</span>
+          <div class="pay-code-tile">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-help.png" alt="">
+            <div class="pay-code-content">
+              <div class="span">
+                <p class="title">抵扣说明：</p>
+                <p> 1.余额是钱包充值的虚拟货币，按照1:1的比例进行支付金额的抵扣。<br> 2.余额无法直接购买下载，可以购买VIP、付费专栏及课程。</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      <a class="pay-balance-con" href="https://i.csdn.net/#/wallet/balance/recharge" target="_blank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/recharge.png" alt=""><span>余额充值</span></a>
+    </div>
+    <div style="display:none;">
+      <img src="" onerror='setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+    </div>
+    <div class="keyword-dec-box" id="keywordDecBox"></div>
+  
+    </div>
+  </main>
+</body>
+</html>

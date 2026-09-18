@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "node scripts/perma-snapshot.js && astro check && astro build",
+    "snapshot": "node scripts/perma-snapshot.js",
     "preview": "astro preview",
     "sync": "node scripts/sync.js",
     "astro": "astro"

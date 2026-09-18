@@ -1,13 +1,15 @@
 ---
+import snapshotsData from '../data/snapshots.json';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <div id="interactive-enhancer-anchor" class="hidden"></div>
 
-<script>
+<script is:inline define:vars={{ snapshotsData, baseUrl }}>
   // ============================================================
   // 1. Obsidian Callout 原生提示框渲染引擎
   // ============================================================
-  const CALLOUT_CONFIG: Record<string, { icon: string; title: string; classes: string; titleColor: string }> = {
+  const CALLOUT_CONFIG = {
     danger: {
       icon: '🛑',
       title: '高频考点警示',
@@ -58,7 +60,6 @@
 
     const blockquotes = article.querySelectorAll('blockquote');
     blockquotes.forEach((bq) => {
-      // 检查首行是否包含 [!TYPE]
       const firstP = bq.querySelector('p');
       if (!firstP) return;
 
@@ -70,13 +71,11 @@
       const customTitle = match[2].trim();
       const cfg = CALLOUT_CONFIG[type] || CALLOUT_CONFIG['note'];
 
-      // 移除原有的 [!TYPE] 标记
       firstP.innerHTML = customTitle ? customTitle : '';
       if (!firstP.innerHTML.trim()) {
         firstP.remove();
       }
 
-      // 创建现代卡片容器
       const card = document.createElement('div');
       card.className = `my-6 p-4 rounded-r-xl border border-border/60 ${cfg.classes} shadow-xs transition-all`;
 
@@ -84,7 +83,6 @@
       header.className = `flex items-center gap-2 mb-2 font-mono text-xs ${cfg.titleColor}`;
       header.innerHTML = `<span>${cfg.icon}</span><span class="uppercase tracking-wider">${customTitle ? customTitle : cfg.title}</span>`;
 
-      // 将原 blockquote 的其余子节点移入
       card.appendChild(header);
       while (bq.firstChild) {
         card.appendChild(bq.firstChild);
@@ -97,23 +95,20 @@
   // ============================================================
   // 2. Reactive Markdown 通用语法引擎 (Scrubbable Numbers & Calc)
   // ============================================================
-  const reactiveStore: Record<string, number> = {};
+  const reactiveStore = {};
 
-  function safeEvaluate(expr: string): number {
+  function safeEvaluate(expr) {
     try {
-      // 安全白名单替换变量
       let sanitized = expr;
       for (const [v, val] of Object.entries(reactiveStore)) {
         const reg = new RegExp(`\\b${v}\\b`, 'g');
         sanitized = sanitized.replace(reg, String(val));
       }
 
-      // 仅允许基础运算与常用 Math 函数，杜绝任意代码注入 (STRIDE 规范)
       if (/[^0-9+\-*/%().,\sMathceilflooroundabsqrtpweEPItoFixed]/.test(sanitized)) {
         return NaN;
       }
 
-      // 安全求值
       return Function(`"use strict"; return (${sanitized});`)();
     } catch {
       return NaN;
@@ -121,7 +116,7 @@
   }
 
   function updateAllCalculations() {
-    const calcs = document.querySelectorAll<HTMLElement>('.reactive-calc');
+    const calcs = document.querySelectorAll('.reactive-calc');
     calcs.forEach((el) => {
       const expr = el.getAttribute('data-expr');
       if (!expr) return;
@@ -134,17 +129,14 @@
     const article = document.querySelector('article');
     if (!article) return;
 
-    // 扫描文章正文并就地转译 [bind:...] 与 [calc:...]
-    // 遍历文本节点，避免破坏外部 DOM 结构
     const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, null);
-    const nodesToReplace: { node: Text; parent: Node }[] = [];
+    const nodesToReplace = [];
 
     while (walker.nextNode()) {
-      const node = walker.currentNode as Text;
+      const node = walker.currentNode;
       if (node.nodeValue && (/\[bind:[^\]]+\]/.test(node.nodeValue) || /\[calc:[^\]]+\]/.test(node.nodeValue))) {
-        // 不在 code/pre 标签内转译
         if (!node.parentElement?.closest('pre, code')) {
-          nodesToReplace.push({ node, parent: node.parentNode! });
+          nodesToReplace.push({ node, parent: node.parentNode });
         }
       }
     }
@@ -153,10 +145,9 @@
       let text = node.nodeValue || '';
       const span = document.createElement('span');
 
-      // 1. 替换 [bind:var, min=1, max=10, default=5, step=1]
       text = text.replace(/\[bind:\s*([a-zA-Z0-9_]+)([^\]]*)\]/g, (_, varName, rawParams) => {
         let min = 0, max = 100, def = 5, step = 1;
-        rawParams.replace(/([a-zA-Z]+)=([0-9.-]+)/g, (_: any, k: string, v: string) => {
+        rawParams.replace(/([a-zA-Z]+)=([0-9.-]+)/g, (_, k, v) => {
           if (k === 'min') min = parseFloat(v);
           if (k === 'max') max = parseFloat(v);
           if (k === 'default') def = parseFloat(v);
@@ -168,7 +159,6 @@
         return `<span class="reactive-bind inline-flex items-center gap-1 px-2 py-0.5 mx-1 rounded border-2 border-dashed border-sky-400/60 bg-sky-500/10 text-sky-400 font-mono text-xs font-bold cursor-ew-resize select-none hover:bg-sky-500/20 active:scale-95 transition-all" data-var="${varName}" data-min="${min}" data-max="${max}" data-step="${step}" data-val="${def}" title="按住鼠标左键左右拖拽调整数值"><span>${varName} =</span><span class="bind-val underline underline-offset-2">${def}</span><span class="text-[10px] opacity-60">⟷</span></span>`;
       });
 
-      // 2. 替换 [calc: expr]
       text = text.replace(/\[calc:\s*([^\]]+)\]/g, (_, expr) => {
         return `<span class="reactive-calc px-2 py-0.5 mx-1 rounded bg-surface border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold shadow-xs" data-expr="${expr.trim()}">0</span>`;
       });
@@ -177,14 +167,13 @@
       parent.replaceChild(span, node);
     });
 
-    // 绑定拖拽事件
-    const binders = document.querySelectorAll<HTMLElement>('.reactive-bind');
+    const binders = document.querySelectorAll('.reactive-bind');
     binders.forEach((binder) => {
-      const varName = binder.getAttribute('data-var')!;
+      const varName = binder.getAttribute('data-var');
       const min = parseFloat(binder.getAttribute('data-min') || '0');
       const max = parseFloat(binder.getAttribute('data-max') || '100');
       const step = parseFloat(binder.getAttribute('data-step') || '1');
-      const valDisplay = binder.querySelector<HTMLElement>('.bind-val')!;
+      const valDisplay = binder.querySelector('.bind-val');
 
       let isDragging = false;
       let startX = 0;
@@ -221,7 +210,6 @@
         }
       });
 
-      // 移动端 Touch
       binder.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
           isDragging = true;
@@ -249,14 +237,53 @@
       });
     });
 
-    // 初始执行一次求值
     updateAllCalculations();
+  }
+
+  // ============================================================
+  // 3. 外链永久快照 (Perma-Snapshot) 双轨防404跳转徽章
+  // ============================================================
+  function enhanceExternalLinksAndSnapshots() {
+    const article = document.querySelector('article');
+    if (!article) return;
+
+    const links = article.querySelectorAll('a[href^="http://"], a[href^="https://"]');
+    links.forEach((a) => {
+      if (a.getAttribute('data-perma-processed') || a.closest('.perma-header')) return;
+      a.setAttribute('data-perma-processed', 'true');
+
+      const href = a.getAttribute('href') || '';
+      if (href.includes('localhost') || href.includes('127.0.0.1') || href.includes('github.com/ekinplzop/blog')) return;
+
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+
+      const snapshot = snapshotsData && snapshotsData[href];
+      if (snapshot && snapshot.status === 'saved') {
+        const badge = document.createElement('a');
+        badge.href = `${baseUrl}/snapshots/${snapshot.hash}.html`;
+        badge.target = '_blank';
+        badge.rel = 'noopener noreferrer';
+        badge.className = 'snapshot-badge ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-mono border border-emerald-500/40 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-all inline-flex items-center gap-0.5 no-underline align-middle shadow-xs';
+        badge.title = `查看于 ${snapshot.date} 捕获的永久离线快照 (永不404死链)`;
+        badge.innerHTML = `<span>🏛️</span><span class="underline decoration-dotted">快照</span>`;
+        a.after(badge);
+      } else {
+        if (!a.textContent?.includes('↗')) {
+          const arrow = document.createElement('span');
+          arrow.className = 'text-xs text-muted/60 ml-0.5 font-mono';
+          arrow.textContent = '↗';
+          a.appendChild(arrow);
+        }
+      }
+    });
   }
 
   // DOM 启动器
   function initEnhancements() {
     enhanceCallouts();
     enhanceReactiveDSL();
+    enhanceExternalLinksAndSnapshots();
   }
 
   if (document.readyState === 'loading') {
