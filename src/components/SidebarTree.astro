@@ -27,9 +27,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         {allDocs.length} 篇
       </span>
       <button
-        id="btn-collapse-left-sidebar"
-        class="hidden lg:flex items-center justify-center p-1 rounded-md hover:bg-surface text-muted hover:text-content border border-transparent hover:border-border transition-all"
-        title="收起左侧目录"
+        onclick="window.toggleLeftSidebar && window.toggleLeftSidebar()"
+        class="hidden lg:flex items-center justify-center p-1 rounded-md hover:bg-surface text-muted hover:text-sky-400 border border-transparent hover:border-border transition-all cursor-pointer"
+        title="收起左侧目录 (快捷键)"
       >
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
