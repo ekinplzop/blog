@@ -1,17 +1,23 @@
 ---
-title: "我如何用 Git + 状态机构建一个'活体文档'系统"
-description: "拒绝已死文本的静态陈列。本文深度拆解 Cognitive Kernel 的架构设计哲学：认识论状态机、Git 演进时光机与 Bret Victor 反应式推演工程实现。"
-publishedDate: "2026-09-18"
-tags: ["架构设计", "数字花园", "开源项目", "认知工程", "系统实现"]
+title: 我如何用 Git + 状态机构建一个'活体文档'系统
+publishedDate: '2026-09-18'
+tags:
+  - 架构设计
+  - 数字花园
+  - 开源项目
+  - 认知工程
+  - 系统实现
 lifecycle:
-  status: "evergreen"
-  confidence: 1.0
-  last_verified: "2026-09-18"
+  status: evergreen
+  confidence: 0.98
+  last_verified: '2026-09-18'
+description: >-
+  拒绝已死文本的静态陈列。本文深度拆解 Cognitive Kernel 的架构设计哲学：认识论状态机、Git 演进时光机与 Bret Victor
+  反应式推演工程实现。
 revisions:
-  - date: "2026-09-18"
-    summary: "正式确立 Cognitive Kernel 活体文档与开源认知架构体系"
+  - date: '2026-09-18'
+    summary: 正式确立 Cognitive Kernel 活体文档与开源认知架构体系
 ---
-
 > **项目已开源**：[https://github.com/ekinplzop/blog](https://github.com/ekinplzop/blog) · 欢迎在 GitHub 审查代码或贡献建议。
 
 ---

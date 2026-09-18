@@ -16,6 +16,13 @@ console.log('====================================================\n');
 let syncedDocs = 0;
 let syncedAssets = 0;
 
+function cleanSvgFormatting(markdownText) {
+  // 核心修复：防止 SVG 内部的空行或大于等于4个空格缩进被 Markdown 误解析为缩进代码块
+  return markdownText.replace(/<div[^>]*>\s*(<svg[\s\S]*?<\/svg>)\s*<\/div>/gi, (match, svgContent) => {
+    return '\n\n' + svgContent.trim() + '\n\n';
+  });
+}
+
 function copyRecursive(srcDir, destDir) {
   if (!fs.existsSync(srcDir)) return;
   if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
@@ -35,6 +42,9 @@ function copyRecursive(srcDir, destDir) {
       // 1. 同步 Markdown 笔记
       if (ext === '.md') {
         let content = fs.readFileSync(srcPath, 'utf-8');
+
+        // 自动净化 SVG 格式，避免外层嵌套 div 或缩进导致其变成代码块
+        content = cleanSvgFormatting(content);
 
         // 智能检查：如果笔记没有 Frontmatter，自动补齐标准生命周期元数据
         if (!content.trim().startsWith('---')) {
@@ -59,7 +69,7 @@ function copyRecursive(srcDir, destDir) {
         fs.writeFileSync(destPath, content, 'utf-8');
         syncedDocs++;
       }
-      // 2. 关键补丁：同步图片与高清示意图资源 (PNG, JPG, SVG 等)
+      // 2. 同步图片与高清示意图资源 (PNG, JPG, SVG 等)
       else if (IMAGE_EXTS.has(ext)) {
         fs.copyFileSync(srcPath, destPath);
         syncedAssets++;
@@ -83,6 +93,7 @@ try {
       const srcPath = path.join(OBSIDIAN_VAULT, entry.name);
       const destPath = path.join(BLOG_DOCS_DIR, entry.name);
       let content = fs.readFileSync(srcPath, 'utf-8');
+      content = cleanSvgFormatting(content);
       if (!content.trim().startsWith('---')) {
         const title = entry.name.replace(/\.md$/, '');
         const today = new Date().toISOString().split('T')[0];
@@ -109,7 +120,7 @@ try {
   console.log(`📑 已扫描同步 ${syncedDocs} 篇 Markdown 笔记`);
   console.log(`🖼️  已同步 ${syncedAssets} 个图片/示意图资源\n`);
 
-  // 1.5 智能应用四态生命周期认知分类
+  // 1.5 智能应用四态生命周期认知分类 (通过 gray-matter 严格排重与规范化)
   execSync('node scripts/reclassify-lifecycle.js', { stdio: 'inherit' });
 
   // 2. 暂存所有改动
@@ -137,7 +148,6 @@ try {
     } catch (pushErr) {
       console.warn(`⚠️ 第 ${attempt} 次推送超时或网络波动，正在重试...`);
       if (attempt < 3) {
-        // 等待 2 秒重试
         execSync('node -e "setTimeout(()=>{}, 2000)"');
       }
     }
@@ -151,7 +161,6 @@ try {
     console.log('====================================================\n');
   } else {
     console.error('\n❌ GitHub 网络连接暂时超时，本地笔记已安全保存在本地 Git 中。');
-    console.error('你可以稍后网络通畅时再次运行，或检查代理工具是否正常。');
   }
 } catch (err) {
   console.error('❌ 执行过程中出现错误:', err.message);
