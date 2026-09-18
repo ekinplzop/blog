@@ -1,8 +1,9 @@
 # 项目方案书：Cognitive Kernel（认知内核系统）
 ## 面向长期维护的个人技术内容系统与交互式文档平台方案书
 
-> **文档版本**：v3.1.0-PRODUCTION（终审核准实施版 · 95+优秀达标）  
-> **设计定位**：基于 Local-First 原则的个人技术博客与交互式文档系统，聚焦内容生命周期管理、编译期反应式推演、STRIDE 纵深安全沙箱防护与零厂商锁定的纯静态归档。  
+> **文档版本**：v5.0.0-MASTER-EDITION（终极工程与演进母本）  
+> **设计定位**：基于 Local-First 原则的个人技术内容系统、活体文档时光机与认知外骨骼仪器平台。  
+> **全景母本**：本方案书完整全景与未来深度演进设计已统一汇编至 [COGNITIVE_KERNEL_MASTER_PROPOSAL.md](/COGNITIVE_KERNEL_MASTER_PROPOSAL.md)。  
 > **开源许可**：MIT License（完全开放、允许二次分发与自由修改）
 
 ---
