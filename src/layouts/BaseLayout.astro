@@ -5,9 +5,10 @@ import CommandPalette from '../components/CommandPalette.astro';
 interface Props {
   title: string;
   description?: string;
+  fullWidth?: boolean;
 }
 
-const { title, description = 'Cognitive Kernel - 个人认知演进与活体数字花园' } = Astro.props;
+const { title, description = 'Cognitive Kernel - 个人认知演进与活体数字花园', fullWidth = false } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
@@ -40,7 +41,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   <body class="min-h-screen flex flex-col selection:bg-sky-500/20 selection:text-sky-400">
     <!-- 顶部极简导航栏 -->
     <header class="sticky top-0 z-40 w-full border-b border-border bg-surface/80 backdrop-blur-md">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <div class={`w-full mx-auto h-14 flex items-center justify-between ${fullWidth ? 'max-w-[1920px] px-4 sm:px-8' : 'max-w-7xl px-4 sm:px-6'}`}>
         <div class="flex items-center gap-6">
           <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
             <span class="w-2 h-2 rounded-full bg-sky-500 group-hover:scale-125 transition-transform"></span>
@@ -83,13 +84,13 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </header>
 
     <!-- 主视图容器 -->
-    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <main class={`flex-1 w-full mx-auto py-6 sm:py-8 ${fullWidth ? 'max-w-[1920px] px-3 sm:px-6 lg:px-8' : 'max-w-7xl px-4 sm:px-6'}`}>
       <slot />
     </main>
 
     <!-- 极简页脚 -->
     <footer class="border-t border-border mt-auto py-8 text-center text-xs text-muted font-mono">
-      <div class="max-w-7xl mx-auto px-4">
+      <div class={`w-full mx-auto px-4 ${fullWidth ? 'max-w-[1920px]' : 'max-w-7xl'}`}>
         Cognitive Kernel · Local-First 活体认知花园 · 0KB 纯静态离线保障
       </div>
     </footer>
