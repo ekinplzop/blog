@@ -1,19 +1,20 @@
 ---
-title: "JavaScript 事件循环微任务优先级的本质"
-description: "深入 ECMAScript 规范与 V8 引擎内核，剖析 Microtask 与 Macrotask 的物理调度差异与心智模型。"
-publishedDate: "2024-03-18"
-tags: ["JavaScript", "V8", "异步编程"]
+title: JavaScript 事件循环微任务优先级的本质
+publishedDate: '2024-03-18'
+tags:
+  - JavaScript
+  - V8
+  - 异步编程
 lifecycle:
-  status: "evergreen"
+  status: evergreen
   confidence: 0.98
-  last_verified: "2026-01-10"
+  last_verified: '2026-09-18'
+description: 深入 ECMAScript 规范与 V8 引擎内核，剖析 Microtask 与 Macrotask 的物理调度差异与心智模型。
 revisions:
-  - date: "2024-03-18"
-    commit: "4a2c1f"
-    summary: "完成基于 V8 源码的任务队列拓扑解析"
-superseded_by: null
+  - date: '2024-03-18'
+    commit: 4a2c1f
+    summary: 完成基于 V8 源码的任务队列拓扑解析
 ---
-
 ## 1. 任务队列的物理结构
 
 在浏览器主线程中，事件循环并不是一个无限轮询的单队列，而是维护着一个**微任务检查点（Microtask Checkpoint）**机制。

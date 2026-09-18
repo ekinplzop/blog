@@ -1,13 +1,14 @@
 ---
-title: "Pi 使用手册"
-publishedDate: "2026-09-18"
-tags: ["Obsidian", "速查"]
+title: Pi 使用手册
+publishedDate: '2026-09-18'
+tags:
+  - Obsidian
+  - 速查
 lifecycle:
-  status: "evergreen"
-  confidence: 0.95
-  last_verified: "2026-09-18"
+  status: seedling
+  confidence: 0.65
+  last_verified: '2026-09-18'
 ---
-
 > 网页阅读版（右侧固定目录）：[Pi 使用手册.html](./Pi%20使用手册.html)
 
 # 一、Pi简介与启动方式

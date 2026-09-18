@@ -1,17 +1,20 @@
 ---
-title: "考研数学 · 线性代数：特征值、特征向量与二次型公式速查"
-description: "行列式展开定理、范德蒙行列式、相似对角化、实对称矩阵正交对角化与二次型合同变换全景公式推导速查。"
-publishedDate: "2024-07-01"
-tags: ["考研数学", "线性代数", "特征值与特征向量", "二次型"]
+title: 考研数学 · 线性代数：特征值、特征向量与二次型公式速查
+publishedDate: '2024-07-01'
+tags:
+  - 考研数学
+  - 线性代数
+  - 特征值与特征向量
+  - 二次型
 lifecycle:
-  status: "evergreen"
-  confidence: 1.0
-  last_verified: "2026-03-12"
+  status: evergreen
+  confidence: 0.98
+  last_verified: '2026-09-18'
+description: 行列式展开定理、范德蒙行列式、相似对角化、实对称矩阵正交对角化与二次型合同变换全景公式推导速查。
 revisions:
-  - date: "2024-07-01"
-    summary: "完成全体系线性代数核心公式梳理"
+  - date: '2024-07-01'
+    summary: 完成全体系线性代数核心公式梳理
 ---
-
 # 线性代数公式速查 特征值与特征向量，二次型
 
 ## 常用公式

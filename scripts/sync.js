@@ -109,6 +109,9 @@ try {
   console.log(`📑 已扫描同步 ${syncedDocs} 篇 Markdown 笔记`);
   console.log(`🖼️  已同步 ${syncedAssets} 个图片/示意图资源\n`);
 
+  // 1.5 智能应用四态生命周期认知分类
+  execSync('node scripts/reclassify-lifecycle.js', { stdio: 'inherit' });
+
   // 2. 暂存所有改动
   console.log('📦 正在暂存变动到本地版本库...');
   execSync('git add .', { stdio: 'inherit' });

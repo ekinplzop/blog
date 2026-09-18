@@ -1,13 +1,14 @@
 ---
-title: "数据结构zone"
-publishedDate: "2026-09-18"
-tags: ["考研笔记", "Obsidian"]
+title: 数据结构zone
+publishedDate: '2026-09-18'
+tags:
+  - 考研笔记
+  - Obsidian
 lifecycle:
-  status: "evergreen"
-  confidence: 0.98
-  last_verified: "2026-09-18"
+  status: seedling
+  confidence: 0.65
+  last_verified: '2026-09-18'
 ---
-
 # 排序算法复杂度与稳定性
 
 > [!info] 符号说明

@@ -1,17 +1,20 @@
 ---
-title: "考研408 · 操作系统：02 进程与线程深度解析"
-description: "进程实体、PCB 核心管理、五态与七态调度状态机流转（含 SVG 高清图解）、ULT/KLT 线程模型与四大经典同步互斥问题详解。"
-publishedDate: "2024-09-10"
-tags: ["考研408", "操作系统", "进程与线程", "高分笔记"]
+title: 考研408 · 操作系统：02 进程与线程深度解析
+publishedDate: '2024-09-10'
+tags:
+  - 考研408
+  - 操作系统
+  - 进程与线程
+  - 高分笔记
 lifecycle:
-  status: "evergreen"
+  status: evergreen
   confidence: 0.98
-  last_verified: "2026-03-12"
+  last_verified: '2026-09-18'
+description: 进程实体、PCB 核心管理、五态与七态调度状态机流转（含 SVG 高清图解）、ULT/KLT 线程模型与四大经典同步互斥问题详解。
 revisions:
-  - date: "2024-09-10"
-    summary: "整理 408 历年真题核心知识点与进程线程调度模型"
+  - date: '2024-09-10'
+    summary: 整理 408 历年真题核心知识点与进程线程调度模型
 ---
-
 ## 2.1 进程
 
 - 进程是系统进行资源分配和调度的一个独立单位(动态性) 

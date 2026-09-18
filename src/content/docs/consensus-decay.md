@@ -1,22 +1,23 @@
 ---
-title: "分布式共识中的确定性衰减模型"
-description: "探讨在非完全同步网络拓扑中，节点规模增长对最终一致性收敛速率与故障容忍阈值的衰减影响。"
-publishedDate: "2025-11-04"
-tags: ["分布式系统", "共识算法", "系统架构"]
+title: 分布式共识中的确定性衰减模型
+publishedDate: '2025-11-04'
+tags:
+  - 分布式系统
+  - 共识算法
+  - 系统架构
 lifecycle:
-  status: "in-progress"
-  confidence: 0.82
-  last_verified: "2026-03-12"
+  status: in-progress
+  confidence: 0.85
+  last_verified: '2026-09-18'
+description: 探讨在非完全同步网络拓扑中，节点规模增长对最终一致性收敛速率与故障容忍阈值的衰减影响。
 revisions:
-  - date: "2024-06-10"
-    commit: "8f1a2d"
-    summary: "提出初始假设：基于理想强同步时钟域推导"
-  - date: "2025-11-04"
-    commit: "c3e90b"
-    summary: "重大重构：引入半同步模型，修正拜占庭容错衰减引理"
-superseded_by: null
+  - date: '2024-06-10'
+    commit: 8f1a2d
+    summary: 提出初始假设：基于理想强同步时钟域推导
+  - date: '2025-11-04'
+    commit: c3e90b
+    summary: 重大重构：引入半同步模型，修正拜占庭容错衰减引理
 ---
-
 ## 1. 核心问题假设与背景
 
 在传统拜占庭容错（PBFT）及 Raft 变体算法中，学术界通常假定网络连通性满足弱同步假设（Partial Synchrony）。然而在多区域跨公网的大规模集群中，时钟漂移与网络分区抖动将直接导致确信度的非线性衰减。
