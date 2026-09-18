@@ -1,0 +1,208 @@
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!-- 全局快捷键图例帮助对话框 (按下 ? 唤出) -->
+<div
+  id="keymap-help-modal"
+  class="fixed inset-0 z-50 bg-black/65 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200 select-none not-prose"
+>
+  <div class="w-full max-w-lg rounded-2xl glass-panel shadow-2xl border border-border/80 p-6 transform scale-95 transition-transform duration-200">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-border/80">
+      <div class="flex items-center gap-2 font-mono text-sm font-bold text-content">
+        <span class="text-sky-400">⚡</span>
+        <span>Cognitive Kernel 全局极客快捷键漫游</span>
+      </div>
+      <button id="keymap-close-btn" class="text-muted hover:text-content text-sm p-1 cursor-pointer font-mono font-bold">✕</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+      <!-- 导航组 -->
+      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
+        <div class="text-[10px] text-sky-400 font-bold uppercase tracking-wider">空间导航</div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">回到首页</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">g</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">h</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">聚焦星图</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">g</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">s</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">星图/矩阵切换</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">v</kbd></span>
+        </div>
+      </div>
+
+      <!-- 阅读组 -->
+      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
+        <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">长文心流</div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">微步平移</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">j</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">k</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">全屏专注模式</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">z</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">时光穿梭切换</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">t</kbd></span>
+        </div>
+      </div>
+
+      <!-- 搜索与控制 -->
+      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
+        <div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">神经检索</div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">命令检索</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">/</kbd> 或 <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">⌘K</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">关闭/返回</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">ESC</kbd></span>
+        </div>
+      </div>
+
+      <!-- 系统 -->
+      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
+        <div class="text-[10px] text-rose-400 font-bold uppercase tracking-wider">帮助与快捷键</div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">快捷键总览</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">?</kbd></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted">暗黑/浅色切换</span>
+          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">Shift+D</kbd></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-muted text-center">
+      纯原生事件状态机驱动 · 输入框聚焦时自动禁用防误触
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ baseUrl }}>
+  (function () {
+    const modal = document.getElementById('keymap-help-modal');
+    const closeBtn = document.getElementById('keymap-close-btn');
+    if (!modal) return;
+
+    let isHelpOpen = false;
+    let lastKey = '';
+    let keyTimeout = null;
+
+    function openHelp() {
+      isHelpOpen = true;
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100', 'pointer-events-auto');
+    }
+
+    function closeHelp() {
+      isHelpOpen = false;
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeHelp);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeHelp();
+    });
+
+    // 全局快捷键监听
+    window.addEventListener('keydown', (e) => {
+      // 1. 若当前光标在输入框或文本框中，绝不触发全局快捷键 (防误触)
+      const targetTag = (e.target.tagName || '').toLowerCase();
+      if (targetTag === 'input' || targetTag === 'textarea' || e.target.isContentEditable) {
+        return;
+      }
+
+      // 2. ESC 退出所有弹窗
+      if (e.key === 'Escape') {
+        if (isHelpOpen) {
+          e.preventDefault();
+          closeHelp();
+          return;
+        }
+      }
+
+      // 3. 按 ? 呼出帮助
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        e.preventDefault();
+        if (isHelpOpen) closeHelp();
+        else openHelp();
+        return;
+      }
+
+      // 4. 按 / 呼出命令搜索框
+      if (e.key === '/' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (window.openCommandPalette) {
+          window.openCommandPalette();
+        }
+        return;
+      }
+
+      // 5. 按 z 一键切换专注模式 (DocLayout)
+      if (e.key === 'z' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (window.toggleZenMode) {
+          window.toggleZenMode();
+        }
+        return;
+      }
+
+      // 6. 按 v 一键在星图/矩阵间切换 (首页)
+      if (e.key === 'v' && !e.metaKey && !e.ctrlKey) {
+        const atlasBtn = document.getElementById('mode-atlas-btn');
+        const matrixBtn = document.getElementById('mode-matrix-btn');
+        if (atlasBtn && matrixBtn) {
+          e.preventDefault();
+          const currentMode = localStorage.getItem('garden-view-mode') || 'atlas';
+          if (currentMode === 'atlas') matrixBtn.click();
+          else atlasBtn.click();
+        }
+        return;
+      }
+
+      // 7. 按 j / k 微步平滑平移
+      if (e.key === 'j' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: 80, behavior: 'smooth' });
+        return;
+      }
+      if (e.key === 'k' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: -80, behavior: 'smooth' });
+        return;
+      }
+
+      // 8. 连击键状态机 (g 紧跟 h 回到首页，g 紧跟 s 聚焦星图)
+      if (e.key.toLowerCase() === 'g') {
+        lastKey = 'g';
+        clearTimeout(keyTimeout);
+        keyTimeout = setTimeout(() => { lastKey = ''; }, 600);
+        return;
+      }
+
+      if (lastKey === 'g') {
+        if (e.key.toLowerCase() === 'h') {
+          e.preventDefault();
+          window.location.href = `${baseUrl}/`;
+        } else if (e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          const canvas = document.getElementById('cognitive-canvas');
+          if (canvas) {
+            canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            window.location.href = `${baseUrl}/#view-atlas`;
+          }
+        }
+        lastKey = '';
+      }
+    });
+
+    // 暴露给顶栏帮助按钮
+    window.openKeymapHelp = openHelp;
+  })();
+</script>

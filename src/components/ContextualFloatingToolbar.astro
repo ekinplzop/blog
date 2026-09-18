@@ -1,0 +1,167 @@
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!-- 划选上下文感知工具浮条 (Contextual Floating Toolbar) -->
+<div
+  id="contextual-toolbar"
+  class="fixed z-50 px-2 py-1.5 rounded-xl glass-panel shadow-2xl border border-sky-500/30 flex items-center gap-1.5 opacity-0 pointer-events-none transition-all duration-200 text-xs font-mono select-none"
+  style="transform: translate(-50%, -100%); top: 0; left: 0;"
+>
+  <!-- 1. 复制文本 (附带格式化引用) -->
+  <button
+    id="toolbar-btn-copy"
+    class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-muted hover:text-content hover:bg-surface/80 border border-transparent hover:border-border transition-all cursor-pointer"
+    title="复制选中文字"
+  >
+    <svg class="w-3.5 h-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+    <span id="copy-btn-text">复制</span>
+  </button>
+
+  <span class="w-[1px] h-3.5 bg-border/60"></span>
+
+  <!-- 2. 全站命令搜索选中文本 -->
+  <button
+    id="toolbar-btn-search"
+    class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-muted hover:text-content hover:bg-surface/80 border border-transparent hover:border-border transition-all cursor-pointer"
+    title="以选中文本为关键词呼出搜索"
+  >
+    <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <span>检索</span>
+  </button>
+
+  <span class="w-[1px] h-3.5 bg-border/60"></span>
+
+  <!-- 3. 复制永久锚点链接 -->
+  <button
+    id="toolbar-btn-anchor"
+    class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-muted hover:text-content hover:bg-surface/80 border border-transparent hover:border-border transition-all cursor-pointer"
+    title="复制指向此段落的永久链接"
+  >
+    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+    </svg>
+    <span id="anchor-btn-text">锚点</span>
+  </button>
+</div>
+
+<script is:inline define:vars={{ baseUrl }}>
+  (function () {
+    const toolbar = document.getElementById('contextual-toolbar');
+    const btnCopy = document.getElementById('toolbar-btn-copy');
+    const btnSearch = document.getElementById('toolbar-btn-search');
+    const btnAnchor = document.getElementById('toolbar-btn-anchor');
+    const copyText = document.getElementById('copy-btn-text');
+    const anchorText = document.getElementById('anchor-btn-text');
+
+    if (!toolbar || !btnCopy || !btnSearch || !btnAnchor) return;
+
+    let selectedString = '';
+    let closestHeadingId = '';
+
+    function showToolbar(x, y) {
+      toolbar.style.left = `${x}px`;
+      toolbar.style.top = `${y - 12}px`;
+      toolbar.classList.remove('opacity-0', 'pointer-events-none');
+      toolbar.classList.add('opacity-100', 'pointer-events-auto');
+    }
+
+    function hideToolbar() {
+      toolbar.classList.remove('opacity-100', 'pointer-events-auto');
+      toolbar.classList.add('opacity-0', 'pointer-events-none');
+      if (copyText) copyText.textContent = '复制';
+      if (anchorText) anchorText.textContent = '锚点';
+    }
+
+    // 划选监听
+    document.addEventListener('mouseup', () => {
+      setTimeout(() => {
+        const selection = window.getSelection();
+        if (!selection || selection.isCollapsed) {
+          hideToolbar();
+          return;
+        }
+
+        const text = selection.toString().trim();
+        if (text.length === 0) {
+          hideToolbar();
+          return;
+        }
+
+        selectedString = text;
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
+        // 仅在正文区域划选时响应
+        const article = range.startContainer.parentElement?.closest('article');
+        if (!article) {
+          hideToolbar();
+          return;
+        }
+
+        // 查找最近的标题锚点
+        const heading = range.startContainer.parentElement?.closest('section, article')?.querySelector('h1, h2, h3, h4');
+        closestHeadingId = heading ? heading.id : '';
+
+        // 计算居中坐标
+        const midX = rect.left + rect.width / 2;
+        const topY = rect.top;
+
+        showToolbar(midX, topY);
+      }, 20);
+    });
+
+    // 1. 复制操作
+    btnCopy.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      try {
+        await navigator.clipboard.writeText(selectedString);
+        if (copyText) copyText.textContent = '已复制!';
+        setTimeout(hideToolbar, 800);
+      } catch {
+        if (copyText) copyText.textContent = '失败';
+      }
+    });
+
+    // 2. 检索操作
+    btnSearch.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideToolbar();
+      if (window.openCommandPalette) {
+        window.openCommandPalette();
+        const input = document.getElementById('cmdk-input');
+        if (input) {
+          input.value = selectedString;
+          input.dispatchEvent(new Event('input'));
+        }
+      }
+    });
+
+    // 3. 复制锚点操作
+    btnAnchor.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const currentUrl = new URL(window.location.href);
+      if (closestHeadingId) {
+        currentUrl.hash = `#${closestHeadingId}`;
+      }
+      try {
+        await navigator.clipboard.writeText(currentUrl.toString());
+        if (anchorText) anchorText.textContent = '链接已存!';
+        setTimeout(hideToolbar, 800);
+      } catch {
+        if (anchorText) anchorText.textContent = '失败';
+      }
+    });
+
+    // 点击空白处收起
+    document.addEventListener('mousedown', (e) => {
+      if (!toolbar.contains(e.target)) {
+        hideToolbar();
+      }
+    });
+  })();
+</script>
