@@ -11,9 +11,9 @@ const { initialN = 7 } = Astro.props;
   <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 mb-5 font-mono text-xs">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
-      <span class="font-bold text-sky-400 uppercase tracking-wider">Bret Victor 反应式推演实验室</span>
+      <span class="font-bold text-sky-400 uppercase tracking-wider">Bret Victor 反应式推演实验室 (算法参数非时间轴)</span>
     </div>
-    <span class="text-muted text-[11px]">按住鼠标横向拖拽数值 · 实时推演</span>
+    <span class="text-muted text-[11px]">按住鼠标横向拖拽数值 N · 实时推演</span>
   </div>
 
   <!-- 核心交互控制器与参数区 -->
@@ -21,7 +21,7 @@ const { initialN = 7 } = Astro.props;
     <!-- 左侧：参数与公式计算 (7列) -->
     <div class="md:col-span-7 space-y-4">
       <div class="p-4 rounded-xl border border-border bg-surface/80">
-        <div class="text-xs text-muted font-mono mb-1">调整集群规模节点数 (物理质点 N)</div>
+        <div class="text-xs text-muted font-mono mb-1">【算法参数】物理集群节点数 N (范围 4~25，非时间维度):</div>
         
         <!-- 可横向拖拽的行内数值 -->
         <div class="flex items-center gap-4">
