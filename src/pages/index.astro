@@ -97,8 +97,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {inProgress.map(doc => (
-            <a
+              <a
               href={`${baseUrl}/docs/${doc.slug}`}
+              target="_blank"
               class="group p-5 rounded-xl border border-border hover:border-sky-500/50 bg-surface/30 hover:bg-surface transition-all duration-200"
             >
               <div class="flex items-center justify-between gap-2 mb-2">
@@ -130,8 +131,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {evergreen.map(doc => (
-            <a
+              <a
               href={`${baseUrl}/docs/${doc.slug}`}
+              target="_blank"
               class="group p-5 rounded-xl border border-border hover:border-emerald-500/50 bg-surface/30 hover:bg-surface transition-all duration-200"
             >
               <div class="flex items-center justify-between gap-2 mb-2">
@@ -163,8 +165,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {seedling.map(doc => (
-            <a
+              <a
               href={`${baseUrl}/docs/${doc.slug}`}
+              target="_blank"
               class="group p-5 rounded-xl border border-dashed border-border hover:border-amber-500/50 bg-surface/20 hover:bg-surface transition-all duration-200"
             >
               <div class="flex items-center justify-between gap-2 mb-2">

@@ -7,6 +7,7 @@ interface Props {
 
 const { data } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const githubRepo = 'ekinplzop/blog';
 ---
 
 <div class="relative w-full rounded-2xl border border-border bg-surface/40 overflow-hidden backdrop-blur-sm group">
@@ -488,7 +489,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         popoverTags.appendChild(span);
       });
 
-      popoverLink.href = `${baseUrl}/docs/${node.slug}`;
+// 知识星图节点右上角直接跳转 GitHub 仓库链接
+const githubRepo = 'ekinplzop/blog';
+const githubUrl = `https://github.com/${githubRepo}`;
+const nodeLink = `${githubUrl}/tree/main/src/content/docs/${node.slug}.md`;
+popoverLink.href = nodeLink;
+popoverLink.target = '_blank';
 
       popover.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
       popover.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
