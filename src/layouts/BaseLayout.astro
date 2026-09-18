@@ -56,6 +56,20 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- GitHub 开源仓库按钮 -->
+          <a
+            href="https://github.com/ekinplzop/blog"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface/50 text-muted hover:text-content hover:border-sky-500/50 text-xs font-mono transition-colors group"
+            title="查看 GitHub 源代码 (MIT 开源)"
+          >
+            <svg class="w-4 h-4 fill-current group-hover:text-sky-400 transition-colors" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+            </svg>
+            <span class="hidden md:inline">GitHub</span>
+          </a>
+
           <!-- ⌘K 搜索按钮 -->
           <button
             onclick="window.openCommandPalette && window.openCommandPalette()"
@@ -88,10 +102,24 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       <slot />
     </main>
 
-    <!-- 极简页脚 -->
-    <footer class="border-t border-border mt-auto py-8 text-center text-xs text-muted font-mono">
-      <div class={`w-full mx-auto px-4 ${fullWidth ? 'max-w-[1920px]' : 'max-w-7xl'}`}>
-        Cognitive Kernel · Local-First 活体认知花园 · 0KB 纯静态离线保障
+    <!-- 极简页脚 (带 GitHub 开源与 MIT License 说明) -->
+    <footer class="border-t border-border mt-auto py-8 text-xs text-muted font-mono">
+      <div class={`w-full mx-auto px-4 ${fullWidth ? 'max-w-[1920px]' : 'max-w-7xl'} flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left`}>
+        <div>Cognitive Kernel · Local-First 活体认知花园 · 0KB 纯静态离线保障</div>
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/ekinplzop/blog" target="_blank" rel="noopener noreferrer" class="hover:text-sky-400 hover:underline flex items-center gap-1 text-content">
+            <span>GitHub 开源仓库</span>
+            <span class="text-[10px]">↗</span>
+          </a>
+          <span>·</span>
+          <a href="https://github.com/ekinplzop/blog/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="hover:text-sky-400 hover:underline">
+            MIT License
+          </a>
+          <span>·</span>
+          <a href={`${baseUrl}/docs/how-i-built-cognitive-kernel`} class="text-sky-400 hover:underline">
+            设计哲学
+          </a>
+        </div>
       </div>
     </footer>
 

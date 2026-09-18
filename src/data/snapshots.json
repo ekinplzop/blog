@@ -28,5 +28,17 @@
     "title": "[网络基础]以太网的最大和最小帧长是怎样计算的_以太网帧的最小长度和最大长度-CSDN博客",
     "date": "2026-09-18",
     "status": "saved"
+  },
+  "https://github.com/ekinplzop/blog": {
+    "hash": "ed6cfd4c6d37",
+    "title": "GitHub - ekinplzop/blog: On My Blog · GitHub",
+    "date": "2026-09-18",
+    "status": "saved"
+  },
+  "https://github.com/ekinplzop/blog]": {
+    "hash": "79840cc02352",
+    "date": "2026-09-18",
+    "status": "failed",
+    "error": "HTTP 404"
   }
 }

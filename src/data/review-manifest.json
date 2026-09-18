@@ -1,10 +1,16 @@
 {
-  "scannedAt": "2026-09-18T12:51:31.343Z",
-  "totalScanned": 65,
-  "issueCount": 2,
+  "scannedAt": "2026-09-18T14:02:04.649Z",
+  "totalScanned": 66,
+  "issueCount": 3,
   "issues": [
     {
       "slug": "consensus-decay",
+      "level": "hint",
+      "type": "POTENTIAL_CONTRADICTION",
+      "message": "检测到包含推翻语义词汇 [已推翻]，建议人工审查是否需声明认知迭代或拆解 Diff。"
+    },
+    {
+      "slug": "how-i-built-cognitive-kernel",
       "level": "hint",
       "type": "POTENTIAL_CONTRADICTION",
       "message": "检测到包含推翻语义词汇 [已推翻]，建议人工审查是否需声明认知迭代或拆解 Diff。"
