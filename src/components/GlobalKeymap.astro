@@ -9,7 +9,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 >
   <div
     id="keymap-modal-card"
-    class="w-full max-w-2xl rounded-2xl bg-surface glass-panel shadow-2xl border border-border/80 p-5 sm:p-7 transform scale-95 transition-all duration-200 flex flex-col max-h-[90vh]"
+    class="w-full max-w-2xl rounded-2xl bg-[#121216] text-zinc-100 border border-zinc-700/80 shadow-2xl p-5 sm:p-7 transform scale-95 transition-all duration-200 flex flex-col max-h-[90vh]"
   >
     <!-- 头部：Vimium 风格标题栏与中英双语切换器 -->
     <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-border/80">
@@ -348,15 +348,11 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       if (e.target === modal) closeHelp();
     });
 
-    // 绑定顶栏直接点击按钮
-    const triggerBtn = document.getElementById('btn-keymap-help-trigger');
-    if (triggerBtn) {
-      triggerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (isHelpOpen) closeHelp();
-        else openHelp();
-      });
-    }
+    // 暴露全局切换函数，由按钮 onclick 单一控制，避免双重事件监听竞争
+    window.openKeymapHelp = function () {
+      if (isHelpOpen) closeHelp();
+      else openHelp();
+    };
 
     // 3. 全局 Vimium 快捷键状态机监听
     window.addEventListener('keydown', (e) => {
@@ -493,7 +489,5 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         lastKey = '';
       }
     });
-
-    window.openKeymapHelp = openHelp;
   })();
 </script>
