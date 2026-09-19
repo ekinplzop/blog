@@ -2,84 +2,265 @@
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<!-- 全局快捷键图例帮助对话框 (按下 ? 唤出) -->
+<!-- Vimium 级中英双语极客快捷键漫游面板 (按下 ? 唤出) -->
 <div
   id="keymap-help-modal"
-  class="fixed inset-0 z-50 bg-black/65 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200 select-none not-prose"
+  class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200 select-none not-prose"
 >
-  <div class="w-full max-w-lg rounded-2xl glass-panel shadow-2xl border border-border/80 p-6 transform scale-95 transition-transform duration-200">
-    <div class="flex items-center justify-between pb-3 mb-4 border-b border-border/80">
-      <div class="flex items-center gap-2 font-mono text-sm font-bold text-content">
-        <span class="text-sky-400">⚡</span>
-        <span>Cognitive Kernel 全局极客快捷键漫游</span>
-      </div>
-      <button id="keymap-close-btn" class="text-muted hover:text-content text-sm p-1 cursor-pointer font-mono font-bold">✕</button>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-      <!-- 导航组 -->
-      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
-        <div class="text-[10px] text-sky-400 font-bold uppercase tracking-wider">空间导航</div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">回到首页</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">g</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">h</kbd></span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">聚焦星图</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">g</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">s</kbd></span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">星图/矩阵切换</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">v</kbd></span>
-        </div>
+  <div class="w-full max-w-2xl rounded-2xl glass-panel shadow-2xl border border-border/80 p-5 sm:p-7 transform scale-95 transition-transform duration-200 flex flex-col max-h-[90vh]">
+    <!-- 头部：Vimium 风格标题栏与中英双语切换器 -->
+    <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-border/80">
+      <div class="flex items-center gap-2 font-mono">
+        <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+        <span class="text-sm sm:text-base font-bold text-content tracking-tight">
+          Cognitive Kernel <span class="text-sky-400 font-normal">· Vimium Help</span>
+        </span>
       </div>
 
-      <!-- 阅读组 -->
-      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
-        <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">长文心流</div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">微步平移</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">j</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">k</kbd></span>
+      <div class="flex items-center gap-2">
+        <!-- 语言切换三联胶囊 -->
+        <div class="inline-flex p-0.5 rounded-lg bg-surface border border-border text-[11px] font-mono">
+          <button
+            id="lang-btn-bi"
+            class="px-2 py-0.5 rounded-md text-sky-400 bg-sky-500/15 font-semibold transition-all cursor-pointer"
+            title="中英双语对照 / Bilingual"
+          >
+            🌐 双语
+          </button>
+          <button
+            id="lang-btn-zh"
+            class="px-2 py-0.5 rounded-md text-muted hover:text-content transition-all cursor-pointer"
+            title="仅中文"
+          >
+            中文
+          </button>
+          <button
+            id="lang-btn-en"
+            class="px-2 py-0.5 rounded-md text-muted hover:text-content transition-all cursor-pointer"
+            title="English Only"
+          >
+            EN
+          </button>
         </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">全屏专注模式</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">z</kbd></span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">时光穿梭切换</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">t</kbd></span>
-        </div>
-      </div>
 
-      <!-- 搜索与控制 -->
-      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
-        <div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">神经检索</div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">命令检索</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">/</kbd> 或 <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">⌘K</kbd></span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">关闭/返回</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">ESC</kbd></span>
-        </div>
-      </div>
-
-      <!-- 系统 -->
-      <div class="p-3 rounded-xl border border-border/60 bg-surface/50 space-y-2">
-        <div class="text-[10px] text-rose-400 font-bold uppercase tracking-wider">帮助与快捷键</div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">快捷键总览</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">?</kbd></span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-muted">暗黑/浅色切换</span>
-          <span class="space-x-1"><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border">Shift+D</kbd></span>
-        </div>
+        <button
+          id="keymap-close-btn"
+          class="text-muted hover:text-content text-sm px-2 py-1 rounded-md hover:bg-surface border border-transparent hover:border-border cursor-pointer font-mono font-bold transition-all"
+          title="关闭 (Esc)"
+        >
+          ✕
+        </button>
       </div>
     </div>
 
-    <div class="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-muted text-center">
-      纯原生事件状态机驱动 · 输入框聚焦时自动禁用防误触
+    <!-- 快捷键双栏对照区 (仿照 Vimium 经典学术排版) -->
+    <div id="keymap-content-body" class="flex-1 overflow-y-auto pr-1 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+      
+      <!-- 左栏：页面滚动与空间漫游 -->
+      <div class="space-y-4">
+        <!-- 分组 1：页面漫游 -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-bold text-sky-400 uppercase tracking-wider border-b border-border/40 pb-1 flex items-center justify-between">
+            <span class="lang-zh">页面平移与浏览</span>
+            <span class="lang-en text-muted font-normal text-[10px]">Navigating the page</span>
+          </div>
+
+          <!-- j / k -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">j</kbd>
+              <span class="text-muted">/</span>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">k</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">向下 / 向上微步平移</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Scroll down / up</span>
+            </div>
+          </div>
+
+          <!-- d / u -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">d</kbd>
+              <span class="text-muted">/</span>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">u</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">向下 / 向上半屏跳跃</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Scroll half page down / up</span>
+            </div>
+          </div>
+
+          <!-- gg / G -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">g</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">g</kbd>
+              <span class="text-muted">/</span>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-300 font-bold">G</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">滚动到页面顶部 / 底部</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Scroll to top / bottom</span>
+            </div>
+          </div>
+
+          <!-- z -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-400 font-bold">z</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">全屏专注阅读模式</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle Zen focus mode</span>
+            </div>
+          </div>
+
+          <!-- t -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-400 font-bold">t</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">思想演进时光机穿梭</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Cycle Time-Machine diff</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分组 2：空间导航 -->
+        <div class="space-y-2 pt-2">
+          <div class="text-[11px] font-bold text-sky-400 uppercase tracking-wider border-b border-border/40 pb-1 flex items-center justify-between">
+            <span class="lang-zh">空间导航与切换</span>
+            <span class="lang-en text-muted font-normal text-[10px]">Spatial navigation</span>
+          </div>
+
+          <!-- g h -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-300 font-bold">g</kbd>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-300 font-bold">h</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">回到博客首页</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Go to home</span>
+            </div>
+          </div>
+
+          <!-- g s -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-300 font-bold">g</kbd>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-300 font-bold">s</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">聚焦认知星图</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Focus Constellation Atlas</span>
+            </div>
+          </div>
+
+          <!-- v -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-300 font-bold">v</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">星图 ↔ 矩阵双模切换</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle Atlas / Matrix view</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右栏：Vomnibar 神经检索与系统指令 -->
+      <div class="space-y-4">
+        <!-- 分组 3：Vomnibar 神经命令搜索 -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider border-b border-border/40 pb-1 flex items-center justify-between">
+            <span class="lang-zh">神经控制台 (Vomnibar)</span>
+            <span class="lang-en text-muted font-normal text-[10px]">Using the Command Bar</span>
+          </div>
+
+          <!-- o / / -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-300 font-bold">o</kbd>
+              <span class="text-muted">,</span>
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-300 font-bold">/</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">呼出全站神经命令搜索</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Open Command Palette (Vomnibar)</span>
+            </div>
+          </div>
+
+          <!-- ⌘K -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-300 font-bold">⌘</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-emerald-300 font-bold">K</kbd>
+              <span class="text-muted">/</span>
+              <kbd class="px-1 py-0.5 rounded bg-surface border border-border text-[10px]">Ctrl+K</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">快速过滤文章与标签</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Filter articles by title or tag</span>
+            </div>
+          </div>
+
+          <!-- Esc -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-muted font-bold">Esc</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">关闭弹窗 / 清除焦点</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Close dialog / blur input</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分组 4：系统杂项与外观 -->
+        <div class="space-y-2 pt-2">
+          <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider border-b border-border/40 pb-1 flex items-center justify-between">
+            <span class="lang-zh">系统偏好与帮助</span>
+            <span class="lang-en text-muted font-normal text-[10px]">Preferences & Help</span>
+          </div>
+
+          <!-- ? -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-rose-400 font-bold">?</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">打开 / 关闭此快捷键面板</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Show / hide this help modal</span>
+            </div>
+          </div>
+
+          <!-- Shift + D -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-rose-400 font-bold">Shift</kbd><kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-rose-400 font-bold">D</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">切换暗黑 / 浅色模式</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle Dark / Light theme</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部：Vimium 风格说明与版本号 -->
+    <div class="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-muted flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="text-emerald-400">●</span>
+        <span class="lang-zh">纯原生状态机驱动 · 输入框内自动静默防误触</span>
+        <span class="lang-en hidden text-[10px]">Native keyboard state machine · Safe inside text inputs</span>
+      </div>
+      <div class="text-[10px] text-muted/60">
+        Vimium Standard · Cognitive Kernel v4.5
+      </div>
     </div>
   </div>
 </div>
@@ -88,12 +269,55 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   (function () {
     const modal = document.getElementById('keymap-help-modal');
     const closeBtn = document.getElementById('keymap-close-btn');
+    const container = document.getElementById('keymap-content-body');
+    const langBtnBi = document.getElementById('lang-btn-bi');
+    const langBtnZh = document.getElementById('lang-btn-zh');
+    const langBtnEn = document.getElementById('lang-btn-en');
+
     if (!modal) return;
 
     let isHelpOpen = false;
     let lastKey = '';
     let keyTimeout = null;
 
+    // 1. 中英双语切换引擎 (Bilingual / Chinese / English)
+    let currentLang = localStorage.getItem('garden-keymap-lang') || 'bi';
+
+    function setLanguage(mode) {
+      currentLang = mode;
+      localStorage.setItem('garden-keymap-lang', mode);
+
+      const defaultBtn = 'px-2 py-0.5 rounded-md text-muted hover:text-content transition-all cursor-pointer';
+      const activeBtn = 'px-2 py-0.5 rounded-md text-sky-400 bg-sky-500/15 font-semibold transition-all cursor-pointer';
+
+      if (langBtnBi) langBtnBi.className = mode === 'bi' ? activeBtn : defaultBtn;
+      if (langBtnZh) langBtnZh.className = mode === 'zh' ? activeBtn : defaultBtn;
+      if (langBtnEn) langBtnEn.className = mode === 'en' ? activeBtn : defaultBtn;
+
+      const zhElements = modal.querySelectorAll('.lang-zh');
+      const enElements = modal.querySelectorAll('.lang-en');
+
+      if (mode === 'zh') {
+        zhElements.forEach(el => el.classList.remove('hidden'));
+        enElements.forEach(el => el.classList.add('hidden'));
+      } else if (mode === 'en') {
+        zhElements.forEach(el => el.classList.add('hidden'));
+        enElements.forEach(el => el.classList.remove('hidden'));
+      } else {
+        // 双语对照 (Bilingual)
+        zhElements.forEach(el => el.classList.remove('hidden'));
+        enElements.forEach(el => el.classList.remove('hidden'));
+      }
+    }
+
+    if (langBtnBi) langBtnBi.addEventListener('click', () => setLanguage('bi'));
+    if (langBtnZh) langBtnZh.addEventListener('click', () => setLanguage('zh'));
+    if (langBtnEn) langBtnEn.addEventListener('click', () => setLanguage('en'));
+
+    // 初始化应用语言
+    setLanguage(currentLang);
+
+    // 2. 呼出与关闭
     function openHelp() {
       isHelpOpen = true;
       modal.classList.remove('opacity-0', 'pointer-events-none');
@@ -111,15 +335,15 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       if (e.target === modal) closeHelp();
     });
 
-    // 全局快捷键监听
+    // 3. 全局 Vimium 快捷键状态机监听
     window.addEventListener('keydown', (e) => {
-      // 1. 若当前光标在输入框或文本框中，绝不触发全局快捷键 (防误触)
+      // 若聚焦在输入框内，自动静默防误触
       const targetTag = (e.target.tagName || '').toLowerCase();
       if (targetTag === 'input' || targetTag === 'textarea' || e.target.isContentEditable) {
         return;
       }
 
-      // 2. ESC 退出所有弹窗
+      // ESC 退出
       if (e.key === 'Escape') {
         if (isHelpOpen) {
           e.preventDefault();
@@ -128,7 +352,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
       }
 
-      // 3. 按 ? 呼出帮助
+      // ? 呼出帮助
       if (e.key === '?' || (e.shiftKey && e.key === '/')) {
         e.preventDefault();
         if (isHelpOpen) closeHelp();
@@ -136,8 +360,8 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         return;
       }
 
-      // 4. 按 / 呼出命令搜索框
-      if (e.key === '/' && !e.metaKey && !e.ctrlKey) {
+      // / 或 o 呼出 Vomnibar (搜索控制台)
+      if ((e.key === '/' || e.key.toLowerCase() === 'o') && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         if (window.openCommandPalette) {
           window.openCommandPalette();
@@ -145,8 +369,8 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         return;
       }
 
-      // 5. 按 z 一键切换专注模式 (DocLayout)
-      if (e.key === 'z' && !e.metaKey && !e.ctrlKey) {
+      // z 一键切换专注模式
+      if (e.key.toLowerCase() === 'z' && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         if (window.toggleZenMode) {
           window.toggleZenMode();
@@ -154,8 +378,20 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         return;
       }
 
-      // 6. 按 v 一键在星图/矩阵间切换 (首页)
-      if (e.key === 'v' && !e.metaKey && !e.ctrlKey) {
+      // t 一键切换时光机演进 Diff
+      if (e.key.toLowerCase() === 't' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        const slider = document.getElementById('tm-date-slider');
+        if (slider) {
+          let nextVal = (parseInt(slider.value, 10) + 1) % 3;
+          slider.value = String(nextVal);
+          slider.dispatchEvent(new Event('input'));
+        }
+        return;
+      }
+
+      // v 一键在星图/矩阵间切换
+      if (e.key.toLowerCase() === 'v' && !e.metaKey && !e.ctrlKey) {
         const atlasBtn = document.getElementById('mode-atlas-btn');
         const matrixBtn = document.getElementById('mode-matrix-btn');
         if (atlasBtn && matrixBtn) {
@@ -167,22 +403,55 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         return;
       }
 
-      // 7. 按 j / k 微步平滑平移
-      if (e.key === 'j' && !e.metaKey && !e.ctrlKey) {
-        window.scrollBy({ top: 80, behavior: 'smooth' });
-        return;
-      }
-      if (e.key === 'k' && !e.metaKey && !e.ctrlKey) {
-        window.scrollBy({ top: -80, behavior: 'smooth' });
+      // Shift + D 切换主题
+      if (e.shiftKey && e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        const toggle = document.getElementById('theme-toggle');
+        if (toggle) toggle.click();
         return;
       }
 
-      // 8. 连击键状态机 (g 紧跟 h 回到首页，g 紧跟 s 聚焦星图)
-      if (e.key.toLowerCase() === 'g') {
-        lastKey = 'g';
-        clearTimeout(keyTimeout);
-        keyTimeout = setTimeout(() => { lastKey = ''; }, 600);
+      // j / k 微步平移 (Vimium 标配)
+      if (e.key === 'j' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: 90, behavior: 'smooth' });
         return;
+      }
+      if (e.key === 'k' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: -90, behavior: 'smooth' });
+        return;
+      }
+
+      // d / u 半屏翻页 (Vimium 标配)
+      if (e.key === 'd' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: window.innerHeight * 0.5, behavior: 'smooth' });
+        return;
+      }
+      if (e.key === 'u' && !e.metaKey && !e.ctrlKey) {
+        window.scrollBy({ top: -window.innerHeight * 0.5, behavior: 'smooth' });
+        return;
+      }
+
+      // G 滚动到底部 (Shift + g)
+      if (e.shiftKey && e.key === 'G') {
+        e.preventDefault();
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+        return;
+      }
+
+      // g 序列状态机: gg 顶部, gh 首页, gs 星图
+      if (e.key.toLowerCase() === 'g' && !e.shiftKey) {
+        if (lastKey === 'g') {
+          // gg -> 滚动到顶部
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          lastKey = '';
+          return;
+        } else {
+          lastKey = 'g';
+          clearTimeout(keyTimeout);
+          keyTimeout = setTimeout(() => { lastKey = ''; }, 600);
+          return;
+        }
       }
 
       if (lastKey === 'g') {
@@ -202,7 +471,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
     });
 
-    // 暴露给顶栏帮助按钮
     window.openKeymapHelp = openHelp;
   })();
 </script>
