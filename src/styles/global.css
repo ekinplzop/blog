@@ -85,11 +85,16 @@
 }
 
 /* 高级毛玻璃面板 (Glassmorphism 160% 饱和度增强) */
-.glass-surface {
-  background: rgba(18, 18, 22, 0.78);
+.glass-surface, .glass-panel {
+  background: rgba(18, 18, 22, 0.92);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.light .glass-surface, .light .glass-panel {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* 3D 微透视悬停动效 */

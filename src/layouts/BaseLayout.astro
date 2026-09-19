@@ -84,11 +84,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
             <kbd class="text-[10px] bg-surface px-1 py-0.5 rounded border border-border text-muted">Ctrl+K</kbd>
           </button>
 
-          <!-- 快捷键帮助按钮 -->
+          <!-- 快捷键帮助按钮 (所有屏幕可见) -->
           <button
+            id="btn-keymap-help-trigger"
             onclick="window.openKeymapHelp && window.openKeymapHelp()"
-            class="hidden sm:flex items-center justify-center p-2 rounded-lg border border-border text-muted hover:text-content hover:bg-surface transition-colors cursor-pointer"
-            title="查看全局极客快捷键 (? 键)"
+            class="flex items-center justify-center w-8 h-8 rounded-lg border border-border text-muted hover:text-content hover:bg-surface hover:border-sky-500/50 transition-colors cursor-pointer"
+            title="查看全局极客快捷键与漫游指南 (? 键)"
           >
             <span class="font-mono text-xs font-bold">?</span>
           </button>
