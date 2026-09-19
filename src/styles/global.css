@@ -127,3 +127,85 @@
   background: rgba(244, 244, 245, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
+
+/* ==========================================================================
+   Stage 2.2：电子墨水屏 16 阶单色灰度纯粹背诵模式 (E-Ink Reading Mode)
+   消除一切饱和发光与视觉躁动，映射为高锐度中英文衬线体与单色纸质质感
+   ========================================================================== */
+html.theme-eink {
+  filter: grayscale(100%) contrast(108%);
+}
+
+html.theme-eink body {
+  background-color: #0d0d0d !important;
+  background-image: none !important;
+  font-family: 'Source Han Serif SC', 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif !important;
+  letter-spacing: 0.01em;
+}
+
+html.theme-eink.light body {
+  background-color: #f7f6f2 !important;
+  background-image: none !important;
+  color: #111111 !important;
+}
+
+html.theme-eink .glass-surface,
+html.theme-eink .glass-panel {
+  background: #141414 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: #2a2a2a !important;
+  box-shadow: none !important;
+}
+
+html.theme-eink.light .glass-surface,
+html.theme-eink.light .glass-panel {
+  background: #ffffff !important;
+  border-color: #d8d8d4 !important;
+}
+
+html.theme-eink .card-perspective,
+html.theme-eink .card-perspective:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: #333333 !important;
+}
+
+html.theme-eink #scroll-indicator {
+  background: #888888 !important;
+}
+
+/* ==========================================================================
+   Stage 2.3：纯 CSS 检索式练习挖空自测遮挡膜 (Active Recall Cloze)
+   纯 CSS 零 JS 额外重绘开销，鼠标悬停或轻触瞬间融化揭晓核心考点与原语
+   ========================================================================== */
+[data-cloze="active"] article strong,
+[data-cloze="active"] .prose strong,
+[data-cloze="active"] .prose code:not(pre code),
+[data-cloze="active"] .cloze-target {
+  filter: blur(7px);
+  background: rgba(59, 130, 246, 0.25) !important;
+  border: 1px dashed rgba(59, 130, 246, 0.4) !important;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  padding: 0 4px;
+  margin: 0 1px;
+  transition: filter 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s ease, border-color 0.22s ease;
+}
+
+[data-cloze="active"] article strong:hover,
+[data-cloze="active"] article strong:active,
+[data-cloze="active"] .prose strong:hover,
+[data-cloze="active"] .prose strong:active,
+[data-cloze="active"] .prose code:not(pre code):hover,
+[data-cloze="active"] .prose code:not(pre code):active,
+[data-cloze="active"] .cloze-target:hover,
+[data-cloze="active"] .cloze-target:active {
+  filter: blur(0px) !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  user-select: auto;
+}
+

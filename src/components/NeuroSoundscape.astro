@@ -1,0 +1,394 @@
+---
+// 0KB 原生 Web Audio 神经心流声场合成器
+// 无外部 MP3/音频依赖，纯代码实时驱动系统声卡振荡器合成 1/f 粉红细雨噪声与 40Hz 双耳伽马专注节律
+---
+
+<div id="neuro-soundscape-root" class="relative not-prose select-none">
+  <!-- 顶栏耳机触发按钮 -->
+  <button
+    id="btn-soundscape-toggle"
+    class="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-surface/50 text-muted hover:text-content hover:border-sky-500/50 transition-all cursor-pointer relative group"
+    title="心流微声场 (快捷键 M)：0KB Web Audio 纯代码合成自然白噪与 40Hz 专注脑波"
+    aria-label="心流微声场"
+  >
+    <!-- 播放时的流光呼吸光环 -->
+    <span
+      id="soundscape-pulse"
+      class="absolute inset-0 rounded-lg bg-sky-500/20 animate-ping opacity-0 pointer-events-none transition-opacity duration-300"
+    ></span>
+    
+    <!-- 耳机图标 -->
+    <svg class="w-4 h-4 text-muted group-hover:text-sky-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+    </svg>
+
+    <!-- 播放小绿点指示 -->
+    <span
+      id="soundscape-active-dot"
+      class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-400 scale-0 transition-transform duration-200"
+    ></span>
+  </button>
+
+  <!-- 展开的毛玻璃调音微控制面板 -->
+  <div
+    id="soundscape-panel"
+    class="absolute right-0 top-11 w-72 rounded-xl bg-[#121216]/95 text-zinc-200 border border-zinc-700/80 shadow-2xl p-4 backdrop-blur-xl opacity-0 pointer-events-none transform -translate-y-2 transition-all duration-200 z-50 text-xs font-mono"
+  >
+    <!-- 顶栏标题 -->
+    <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-zinc-800">
+      <div class="flex items-center gap-2">
+        <span class="text-sm">🎧</span>
+        <span class="font-bold text-zinc-100">0KB 神经心流声场</span>
+      </div>
+      <span id="soundscape-status-text" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60">
+        已就绪 (待启)
+      </span>
+    </div>
+
+    <!-- 模式选择 -->
+    <div class="space-y-1.5 mb-3">
+      <label class="text-[11px] text-zinc-400">声学模式 (零网络开销)</label>
+      <div class="grid grid-cols-3 gap-1.5">
+        <button
+          type="button"
+          data-mode="rain"
+          class="sound-mode-btn active px-2 py-1.5 rounded-lg border border-sky-500/80 bg-sky-500/20 text-sky-300 font-semibold text-center transition-all cursor-pointer text-[11px]"
+        >
+          🌧️ 细雨
+        </button>
+        <button
+          type="button"
+          data-mode="binaural"
+          class="sound-mode-btn px-2 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 font-medium text-center transition-all cursor-pointer text-[11px]"
+        >
+          🧠 40Hz
+        </button>
+        <button
+          type="button"
+          data-mode="combo"
+          class="sound-mode-btn px-2 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 font-medium text-center transition-all cursor-pointer text-[11px]"
+        >
+          ✨ 双轨
+        </button>
+      </div>
+    </div>
+
+    <!-- 音量调节滑块 -->
+    <div class="space-y-1.5 mb-4">
+      <div class="flex items-center justify-between text-[11px] text-zinc-400">
+        <span>声场响度</span>
+        <span id="soundscape-volume-label" class="text-sky-400 font-mono">25%</span>
+      </div>
+      <input
+        type="range"
+        id="soundscape-volume"
+        min="0"
+        max="100"
+        value="25"
+        class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
+      />
+    </div>
+
+    <!-- 主控操作按钮 -->
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        id="btn-soundscape-main-play"
+        class="flex-1 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-bold text-center transition-colors cursor-pointer shadow-md text-xs flex items-center justify-center gap-1.5 active:scale-95"
+      >
+        <span id="soundscape-play-icon">▶</span>
+        <span id="soundscape-play-text">开启心流伴读</span>
+      </button>
+      <button
+        type="button"
+        id="btn-soundscape-panel-close"
+        class="px-2.5 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer text-xs"
+        title="关闭面板"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- 底部原理说明与快捷键 -->
+    <div class="mt-3 pt-2 border-t border-zinc-800/80 text-[10px] text-zinc-500 flex items-center justify-between">
+      <span>基于 Web Audio 数学振荡</span>
+      <span class="text-zinc-400 font-mono">按 M 键秒切</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 纯代码驱动 Web Audio API 声音合成引擎
+  class NeuroSoundscapeEngine {
+    private ctx: AudioContext | null = null;
+    private rainSource: AudioBufferSourceNode | null = null;
+    private rainGain: GainNode | null = null;
+    private rainFilter: BiquadFilterNode | null = null;
+
+    private oscLeft: OscillatorNode | null = null;
+    private oscRight: OscillatorNode | null = null;
+    private binauralGain: GainNode | null = null;
+
+    private masterGain: GainNode | null = null;
+    public isPlaying: boolean = false;
+    public currentMode: 'rain' | 'binaural' | 'combo' = 'rain';
+    public volume: number = 0.25;
+
+    private initContext() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+        this.masterGain.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+
+    // 1. Paul Kellet 算法 1/f 粉红细雨噪声合成
+    private createRainBuffer(): AudioBuffer {
+      if (!this.ctx) throw new Error('AudioContext uninitialized');
+      const bufferSize = this.ctx.sampleRate * 2; // 2秒无缝循环缓冲
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.045;
+        b6 = white * 0.115926;
+      }
+      return buffer;
+    }
+
+    public play() {
+      this.initContext();
+      if (!this.ctx || !this.masterGain) return;
+
+      this.stop(); // 确保重置所有活跃节点
+
+      const now = this.ctx.currentTime;
+      this.masterGain.gain.cancelScheduledValues(now);
+      this.masterGain.gain.setValueAtTime(0.001, now);
+      this.masterGain.gain.exponentialRampToValueAtTime(Math.max(0.01, this.volume), now + 1.2);
+
+      // A. 开启雨声
+      if (this.currentMode === 'rain' || this.currentMode === 'combo') {
+        const buffer = this.createRainBuffer();
+        this.rainSource = this.ctx.createBufferSource();
+        this.rainSource.buffer = buffer;
+        this.rainSource.loop = true;
+
+        this.rainFilter = this.ctx.createBiquadFilter();
+        this.rainFilter.type = 'lowpass';
+        this.rainFilter.frequency.setValueAtTime(950, now); // 低通滤波使雨声极其柔和无毛刺
+
+        this.rainGain = this.ctx.createGain();
+        this.rainGain.gain.setValueAtTime(0.8, now);
+
+        this.rainSource.connect(this.rainFilter);
+        this.rainFilter.connect(this.rainGain);
+        this.rainGain.connect(this.masterGain);
+        this.rainSource.start();
+      }
+
+      // B. 开启 40Hz 伽马专注双耳节律 (Binaural Beats)
+      if (this.currentMode === 'binaural' || this.currentMode === 'combo') {
+        this.binauralGain = this.ctx.createGain();
+        this.binauralGain.gain.setValueAtTime(this.currentMode === 'combo' ? 0.25 : 0.45, now);
+
+        // 左耳：200 Hz
+        this.oscLeft = this.ctx.createOscillator();
+        this.oscLeft.type = 'sine';
+        this.oscLeft.frequency.setValueAtTime(200, now);
+
+        // 右耳：240 Hz (相差刚好 40Hz 伽马节律)
+        this.oscRight = this.ctx.createOscillator();
+        this.oscRight.type = 'sine';
+        this.oscRight.frequency.setValueAtTime(240, now);
+
+        // 声道拆分融合
+        const merger = this.ctx.createChannelMerger(2);
+        this.oscLeft.connect(merger, 0, 0); // 发送到左声道
+        this.oscRight.connect(merger, 0, 1); // 发送到右声道
+
+        merger.connect(this.binauralGain);
+        this.binauralGain.connect(this.masterGain);
+
+        this.oscLeft.start();
+        this.oscRight.start();
+      }
+
+      this.isPlaying = true;
+    }
+
+    public stop() {
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      if (this.masterGain && this.isPlaying) {
+        this.masterGain.gain.cancelScheduledValues(now);
+        this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+        this.masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+      }
+
+      setTimeout(() => {
+        try {
+          if (this.rainSource) { this.rainSource.stop(); this.rainSource.disconnect(); this.rainSource = null; }
+          if (this.oscLeft) { this.oscLeft.stop(); this.oscLeft.disconnect(); this.oscLeft = null; }
+          if (this.oscRight) { this.oscRight.stop(); this.oscRight.disconnect(); this.oscRight = null; }
+        } catch (_) {}
+      }, 550);
+
+      this.isPlaying = false;
+    }
+
+    public toggle() {
+      if (this.isPlaying) this.stop();
+      else this.play();
+    }
+
+    public setVolume(val: number) {
+      this.volume = Math.max(0, Math.min(1, val));
+      if (this.masterGain && this.ctx && this.isPlaying) {
+        this.masterGain.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+      }
+    }
+
+    public setMode(mode: 'rain' | 'binaural' | 'combo') {
+      this.currentMode = mode;
+      if (this.isPlaying) {
+        this.play(); // 实时平滑切换模式
+      }
+    }
+  }
+
+  // 绑定交互与 UI 状态更新
+  (function setupSoundscape() {
+    const engine = new NeuroSoundscapeEngine();
+    (window as any).__neuroSoundscapeEngine = engine;
+
+    const btnToggle = document.getElementById('btn-soundscape-toggle');
+    const panel = document.getElementById('soundscape-panel');
+    const pulse = document.getElementById('soundscape-pulse');
+    const dot = document.getElementById('soundscape-active-dot');
+    const statusText = document.getElementById('soundscape-status-text');
+    const playBtn = document.getElementById('btn-soundscape-main-play');
+    const playText = document.getElementById('soundscape-play-text');
+    const playIcon = document.getElementById('soundscape-play-icon');
+    const closeBtn = document.getElementById('btn-soundscape-panel-close');
+    const volInput = document.getElementById('soundscape-volume') as HTMLInputElement | null;
+    const volLabel = document.getElementById('soundscape-volume-label');
+    const modeBtns = document.querySelectorAll('.sound-mode-btn');
+
+    let isPanelOpen = false;
+
+    function openPanel() {
+      if (!panel) return;
+      isPanelOpen = true;
+      panel.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
+      panel.classList.add('opacity-100', 'translate-y-0');
+    }
+
+    function closePanel() {
+      if (!panel) return;
+      isPanelOpen = false;
+      panel.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2');
+      panel.classList.remove('opacity-100', 'translate-y-0');
+    }
+
+    function updateUIState() {
+      const playing = engine.isPlaying;
+      if (pulse) {
+        if (playing) pulse.classList.remove('opacity-0');
+        else pulse.classList.add('opacity-0');
+      }
+      if (dot) {
+        if (playing) dot.classList.remove('scale-0');
+        else dot.classList.add('scale-0');
+      }
+      if (statusText) {
+        statusText.textContent = playing ? '沉浸播放中' : '已就绪 (待启)';
+        statusText.className = playing
+          ? 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/50 animate-pulse'
+          : 'text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60';
+      }
+      if (playText && playIcon) {
+        if (playing) {
+          playText.textContent = '暂停心流声场';
+          playIcon.textContent = '⏸';
+        } else {
+          playText.textContent = '开启心流伴读';
+          playIcon.textContent = '▶';
+        }
+      }
+    }
+
+    if (btnToggle) {
+      btnToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPanelOpen) closePanel();
+        else openPanel();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closePanel();
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (isPanelOpen && panel && !panel.contains(e.target as Node) && btnToggle && !btnToggle.contains(e.target as Node)) {
+        closePanel();
+      }
+    });
+
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        engine.toggle();
+        updateUIState();
+      });
+    }
+
+    // 模式切换
+    modeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode') as 'rain' | 'binaural' | 'combo';
+        if (!mode) return;
+        modeBtns.forEach((b) => {
+          b.classList.remove('active', 'border-sky-500/80', 'bg-sky-500/20', 'text-sky-300', 'font-semibold');
+          b.classList.add('border-zinc-700', 'bg-zinc-800/60', 'text-zinc-400');
+        });
+        btn.classList.add('active', 'border-sky-500/80', 'bg-sky-500/20', 'text-sky-300', 'font-semibold');
+        btn.classList.remove('border-zinc-700', 'bg-zinc-800/60', 'text-zinc-400');
+        engine.setMode(mode);
+      });
+    });
+
+    // 音量调节
+    if (volInput && volLabel) {
+      volInput.addEventListener('input', () => {
+        const pct = parseInt(volInput.value, 10);
+        volLabel.textContent = `${pct}%`;
+        engine.setVolume(pct / 100);
+      });
+    }
+
+    // 暴露全局切换方法（供快捷键 M 调用）
+    (window as any).toggleNeuroSoundscape = function () {
+      engine.toggle();
+      updateUIState();
+    };
+  })();
+</script>

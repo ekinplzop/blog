@@ -5,6 +5,7 @@ import TimeMachine from '../components/TimeMachine.astro';
 import SidebarTree from '../components/SidebarTree.astro';
 import InteractiveEnhancer from '../components/InteractiveEnhancer.astro';
 import ContextualFloatingToolbar from '../components/ContextualFloatingToolbar.astro';
+import AlgorithmicIdenticon from '../components/AlgorithmicIdenticon.astro';
 
 interface Props {
   entry: any;
@@ -132,24 +133,52 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
           </button>
         </div>
 
-        <button
-          id="bar-toggle-zen"
-          onclick="window.toggleZenMode && window.toggleZenMode()"
-          class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface/60 hover:bg-sky-500/10 border border-border/60 hover:border-sky-500/40 text-muted hover:text-sky-400 cursor-pointer transition-all active:scale-95"
-          title="全屏专注模式：双侧同时折叠，正文享受最大视野"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5-5m-7 11l-5 5m0 0h4m-4 0v-4m16 4v-4m0 4h-4m4 0l-5-5" />
-          </svg>
-          <span id="bar-zen-text">全屏专注模式</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Active Recall 挖空自测遮挡膜按钮 (快捷键 C) -->
+          <button
+            id="bar-toggle-cloze"
+            onclick="window.toggleClozeMode && window.toggleClozeMode()"
+            class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface/60 hover:bg-sky-500/10 border border-border/60 hover:border-sky-500/40 text-muted hover:text-sky-400 cursor-pointer transition-all active:scale-95"
+            title="挖空自测模式 (快捷键 C)：模糊遮挡关键结论与考点，悬停揭晓"
+          >
+            <span>👁️</span>
+            <span id="bar-cloze-text">挖空自测膜</span>
+          </button>
+
+          <!-- 电子墨水屏纯粹模式 (快捷键 E) -->
+          <button
+            id="bar-toggle-eink"
+            onclick="window.toggleEInkMode && window.toggleEInkMode()"
+            class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface/60 hover:bg-surface border border-border/60 hover:border-zinc-500 text-muted hover:text-content cursor-pointer transition-all active:scale-95"
+            title="电子墨水屏模式 (快捷键 E)：16 阶灰度纸质护眼"
+          >
+            <span>🪶</span>
+            <span>墨水屏</span>
+          </button>
+
+          <!-- 全屏专注模式 (快捷键 Z) -->
+          <button
+            id="bar-toggle-zen"
+            onclick="window.toggleZenMode && window.toggleZenMode()"
+            class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface/60 hover:bg-sky-500/10 border border-border/60 hover:border-sky-500/40 text-muted hover:text-sky-400 cursor-pointer transition-all active:scale-95"
+            title="全屏专注模式 (快捷键 Z)：双侧同时折叠，正文享受最大视野"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5-5m-7 11l-5 5m0 0h4m-4 0v-4m16 4v-4m0 4h-4m4 0l-5-5" />
+            </svg>
+            <span id="bar-zen-text">专注模式</span>
+          </button>
+        </div>
       </div>
 
       <!-- 标题与基本元信息 -->
       <header class="mb-8">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-content mb-3 font-sans leading-tight">
-          {title}
-        </h1>
+        <div class="flex items-start gap-3.5 mb-3">
+          <AlgorithmicIdenticon seed={entry.slug || title} size={36} class="mt-1" title="算法生成式几何认知徽章" />
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-content font-sans leading-tight flex-1">
+            {title}
+          </h1>
+        </div>
         <div class="text-xs font-mono text-muted flex flex-wrap items-center gap-2 sm:gap-4">
           <span>发布于: {publishedDate}</span>
           <span>·</span>
@@ -499,6 +528,56 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
 
       // 初始化应用布局
       applyLayout();
+
+      // 3. Active Recall 纯 CSS 挖空自测遮挡膜
+      const barClozeText = document.getElementById('bar-cloze-text');
+      const barClozeBtn = document.getElementById('bar-toggle-cloze');
+
+      window.toggleClozeMode = function () {
+        if (!mainArticle) return;
+        const isActive = mainArticle.getAttribute('data-cloze') === 'active';
+        if (isActive) {
+          mainArticle.removeAttribute('data-cloze');
+          if (barClozeText) barClozeText.textContent = '挖空自测膜';
+          if (barClozeBtn) {
+            barClozeBtn.classList.remove('bg-sky-500/20', 'border-sky-500/80', 'text-sky-300');
+            barClozeBtn.classList.add('bg-surface/60', 'text-muted');
+          }
+        } else {
+          mainArticle.setAttribute('data-cloze', 'active');
+          if (barClozeText) barClozeText.textContent = '已开启自测';
+          if (barClozeBtn) {
+            barClozeBtn.classList.add('bg-sky-500/20', 'border-sky-500/80', 'text-sky-300');
+            barClozeBtn.classList.remove('bg-surface/60', 'text-muted');
+          }
+
+          // 记录复习打卡至热力图
+          try {
+            const today = new Date().toISOString().split('T')[0];
+            const data = JSON.parse(localStorage.getItem('ck_reading_heatmap') || '{}');
+            data[today] = (data[today] || 0) + 1;
+            localStorage.setItem('ck_reading_heatmap', JSON.stringify(data));
+          } catch (_) {}
+
+          // Toast 提示
+          const hint = document.createElement('div');
+          hint.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-sky-950/90 text-sky-200 border border-sky-500/40 text-xs font-mono shadow-2xl backdrop-blur-md transition-all duration-300 pointer-events-none';
+          hint.textContent = '👁️ 挖空自测模式已就绪：关键结论与考点已模糊，悬停或轻触即可揭晓答案';
+          document.body.appendChild(hint);
+          setTimeout(() => {
+            hint.style.opacity = '0';
+            setTimeout(() => hint.remove(), 300);
+          }, 2400);
+        }
+      };
+
+      // 阅读本文自动记录打卡
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const data = JSON.parse(localStorage.getItem('ck_reading_heatmap') || '{}');
+        data[today] = (data[today] || 0) + 1;
+        localStorage.setItem('ck_reading_heatmap', JSON.stringify(data));
+      } catch (_) {}
     })();
   </script>
 

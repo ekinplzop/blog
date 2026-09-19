@@ -221,11 +221,44 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
           </div>
         </div>
 
-        <!-- 分组 4：系统杂项与外观 -->
+        <!-- 分组 4：系统偏好与心流模式 -->
         <div class="space-y-2 pt-2">
           <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider border-b border-border/40 pb-1 flex items-center justify-between">
-            <span class="lang-zh">系统偏好与帮助</span>
-            <span class="lang-en text-muted font-normal text-[10px]">Preferences & Help</span>
+            <span class="lang-zh">心流声场与视觉模式</span>
+            <span class="lang-en text-muted font-normal text-[10px]">Flow & Ergonomics</span>
+          </div>
+
+          <!-- m -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-sky-400 font-bold">m</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">心流声场 (0KB 雨声/40Hz)</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle Neuro-Soundscape</span>
+            </div>
+          </div>
+
+          <!-- e -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-zinc-300 font-bold">e</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">电子墨水屏纯粹模式</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle E-Ink 16-level grayscale</span>
+            </div>
+          </div>
+
+          <!-- c -->
+          <div class="flex items-center justify-between py-1 hover:bg-surface/50 px-1.5 rounded-lg transition-colors">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <kbd class="px-1.5 py-0.5 rounded bg-surface border border-border text-amber-400 font-bold">c</kbd>
+            </div>
+            <div class="text-right">
+              <span class="text-content lang-zh font-medium">挖空背诵自测遮挡膜</span>
+              <span class="text-muted/70 lang-en text-[10px] block">Toggle Active Recall Cloze</span>
+            </div>
           </div>
 
           <!-- ? -->
@@ -394,6 +427,30 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         if (window.toggleZenMode) {
           window.toggleZenMode();
         }
+        return;
+      }
+
+      // m 一键开启/暂停心流微声场 (Web Audio 细雨/40Hz)
+      if (e.key.toLowerCase() === 'm' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        const fn = window['toggleNeuroSoundscape'];
+        if (typeof fn === 'function') fn();
+        return;
+      }
+
+      // e 一键切换 16 阶单色电子墨水屏阅读模式
+      if (e.key.toLowerCase() === 'e' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        const fn = window['toggleEInkMode'];
+        if (typeof fn === 'function') fn();
+        return;
+      }
+
+      // c 一键切换 Active Recall 纯 CSS 挖空自测遮挡膜
+      if (e.key.toLowerCase() === 'c' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        const fn = window['toggleClozeMode'];
+        if (typeof fn === 'function') fn();
         return;
       }
 

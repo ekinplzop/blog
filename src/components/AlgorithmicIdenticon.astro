@@ -1,0 +1,19 @@
+---
+import { generateIdenticon } from '../utils/identicon';
+
+interface Props {
+  seed: string;
+  size?: number;
+  class?: string;
+  title?: string;
+}
+
+const { seed, size = 28, class: className = '', title = '确定性认知徽章' } = Astro.props;
+const { svg } = generateIdenticon(seed, size);
+---
+
+<div
+  class={`inline-flex items-center justify-center select-none ${className}`}
+  title={title}
+  set:html={svg}
+/>

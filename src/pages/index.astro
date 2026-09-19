@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StatusBadge from '../components/StatusBadge.astro';
 import CognitiveGraph from '../components/CognitiveGraph.astro';
+import ReadingHeatmap from '../components/ReadingHeatmap.astro';
+import AlgorithmicIdenticon from '../components/AlgorithmicIdenticon.astro';
 import { buildGraphData } from '../utils/graph';
 
 const allDocs = await getCollection('docs');
@@ -92,8 +94,13 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   </div>
 
   <!-- 视图 A：拓扑星图空间 (默认激活) -->
-  <section id="view-atlas" class="mb-12 transition-opacity duration-300">
+  <section id="view-atlas" class="mb-10 transition-opacity duration-300">
     <CognitiveGraph data={graphData} />
+  </section>
+
+  <!-- 365 天阅读与自测打卡热力图 (Stage 2.3 核心交付) -->
+  <section class="mb-12">
+    <ReadingHeatmap />
   </section>
 
   <!-- 视图 B：高密度矩阵列表 -->
@@ -118,9 +125,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
                 <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
                 <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
               </div>
-              <h3 class="text-base font-bold text-content group-hover:text-sky-400 transition-colors font-sans">
-                {doc.data.title || doc.slug.split('/').pop() || doc.slug}
-              </h3>
+              <div class="flex items-start gap-2.5">
+                <AlgorithmicIdenticon seed={doc.slug} size={24} class="mt-0.5" />
+                <h3 class="text-base font-bold text-content group-hover:text-sky-400 transition-colors font-sans flex-1">
+                  {doc.data.title || doc.slug.split('/').pop() || doc.slug}
+                </h3>
+              </div>
               {doc.data.description && (
                 <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed font-sans">
                   {doc.data.description}
@@ -152,9 +162,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
                 <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
                 <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
               </div>
-              <h3 class="text-base font-bold text-content group-hover:text-emerald-400 transition-colors font-sans">
-                {doc.data.title || doc.slug.split('/').pop() || doc.slug}
-              </h3>
+              <div class="flex items-start gap-2.5">
+                <AlgorithmicIdenticon seed={doc.slug} size={24} class="mt-0.5" />
+                <h3 class="text-base font-bold text-content group-hover:text-emerald-400 transition-colors font-sans flex-1">
+                  {doc.data.title || doc.slug.split('/').pop() || doc.slug}
+                </h3>
+              </div>
               {doc.data.description && (
                 <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed font-sans">
                   {doc.data.description}
@@ -186,9 +199,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
                 <StatusBadge status={doc.data.lifecycle.status} confidence={doc.data.lifecycle.confidence} size="sm" />
                 <span class="text-xs font-mono text-muted">{doc.data.publishedDate}</span>
               </div>
-              <h3 class="text-base font-bold text-content group-hover:text-amber-400 transition-colors font-sans">
-                {doc.data.title || doc.slug.split('/').pop() || doc.slug}
-              </h3>
+              <div class="flex items-start gap-2.5">
+                <AlgorithmicIdenticon seed={doc.slug} size={24} class="mt-0.5" />
+                <h3 class="text-base font-bold text-content group-hover:text-amber-400 transition-colors font-sans flex-1">
+                  {doc.data.title || doc.slug.split('/').pop() || doc.slug}
+                </h3>
+              </div>
               {doc.data.description && (
                 <p class="text-xs text-muted mt-2 line-clamp-2 leading-relaxed font-sans">
                   {doc.data.description}
