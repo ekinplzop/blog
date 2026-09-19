@@ -17,9 +17,35 @@ let syncedDocs = 0;
 let syncedAssets = 0;
 
 function cleanSvgFormatting(markdownText) {
-  // 核心修复：防止 SVG 内部的空行或大于等于4个空格缩进被 Markdown 误解析为缩进代码块
-  return markdownText.replace(/<div[^>]*>\s*(<svg[\s\S]*?<\/svg>)\s*<\/div>/gi, (match, svgContent) => {
+  // 1. 解开可能包裹在 SVG 外层的各类 <div style="..."> 容器
+  let text = markdownText.replace(/<div[^>]*>\s*(<svg[\s\S]*?<\/svg>)\s*<\/div>/gi, (match, svgContent) => {
     return '\n\n' + svgContent.trim() + '\n\n';
+  });
+
+  // 2. 深度净化所有 SVG：
+  // 根因：CommonMark 规定 HTML 块遇到空行会直接闭合；若空行后的 SVG 内联标签带有 4 个以上空格缩进，
+  // 会被 Markdown 解释器判定为“缩进代码块”（Indented Code Block）！
+  // 解决对策：
+  // - 移除 SVG 标签内部所有完全空白的无意义空行（消除 CommonMark HTML 块提前终止触发源）；
+  // - 去除每行首尾多余缩进（trim），确保没有任何一行以 4 个空格开头；
+  // - 注入自适应居中与最大宽度的内联样式保证移动/桌面端完美呈现。
+  return text.replace(/<svg[\s\S]*?<\/svg>/gi, (rawSvg) => {
+    const lines = rawSvg.split('\n');
+    const cleanedLines = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      cleanedLines.push(trimmed);
+    }
+    let res = cleanedLines.join('\n');
+    if (!res.includes('display:')) {
+      if (/style=["']/i.test(res)) {
+        res = res.replace(/<svg\b([^>]*)style=["']([^"']*)["']/i, '<svg$1style="display:block;margin:20px auto;max-width:100%;$2"');
+      } else {
+        res = res.replace(/<svg\b/i, '<svg style="display:block;margin:20px auto;max-width:100%;" ');
+      }
+    }
+    return '\n\n' + res + '\n\n';
   });
 }
 
