@@ -14,6 +14,9 @@ interface Props {
 
 const { entry, headings } = Astro.props;
 const { title, description, lifecycle, revisions, superseded_by, publishedDate } = entry.data;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const downloadFileName = `${entry.slug.replace(/\//g, '-')}.md`;
+const downloadHref = `${baseUrl}/downloads/${encodeURI(entry.slug)}.md`;
 ---
 
 <BaseLayout title={title} description={description} fullWidth={true}>
@@ -134,6 +137,19 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- ⬇ 下载原文 (快捷键 W) -->
+          <a
+            id="bar-download-md"
+            href={downloadHref}
+            download={downloadFileName}
+            class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface/60 hover:bg-sky-500/10 border border-border/60 hover:border-sky-500/40 text-muted hover:text-sky-400 cursor-pointer transition-all active:scale-95"
+            title="一键下载当前文章原始 Markdown (.md) 源文件 (快捷键 W)"
+            aria-label="下载原始 Markdown"
+          >
+            <span>⬇</span>
+            <span>下载源码</span>
+          </a>
+
           <!-- Active Recall 挖空自测遮挡膜按钮 (快捷键 C) -->
           <button
             id="bar-toggle-cloze"
@@ -179,10 +195,25 @@ const { title, description, lifecycle, revisions, superseded_by, publishedDate }
             {title}
           </h1>
         </div>
-        <div class="text-xs font-mono text-muted flex flex-wrap items-center gap-2 sm:gap-4">
-          <span>发布于: {publishedDate}</span>
-          <span>·</span>
-          <span>路径: {entry.slug}</span>
+        <div class="text-xs font-mono text-muted flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-3">
+          <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <span>发布于: {publishedDate}</span>
+            <span>·</span>
+            <span>路径: {entry.slug}</span>
+          </div>
+
+          <!-- ⬇ 下载原始 Markdown (.md) 纯静态按钮 -->
+          <a
+            id="btn-download-md"
+            href={downloadHref}
+            download={downloadFileName}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface/80 hover:bg-sky-500/10 border border-border/80 hover:border-sky-500/50 text-muted hover:text-sky-400 font-mono text-xs transition-all active:scale-95 group shadow-xs cursor-pointer not-prose"
+            title="下载原始 Markdown 源文件（含完整 Frontmatter 元数据，快捷键 W）"
+            aria-label="下载原始 Markdown"
+          >
+            <span class="text-sky-400 group-hover:-translate-y-0.5 transition-transform">⬇</span>
+            <span class="font-medium text-content/90 group-hover:text-sky-400 transition-colors">下载原文 (.md)</span>
+          </a>
         </div>
 
         <!-- 认知生命周期横幅 -->
