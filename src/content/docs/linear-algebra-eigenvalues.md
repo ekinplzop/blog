@@ -9,7 +9,7 @@ tags:
 lifecycle:
   status: evergreen
   confidence: 0.98
-  last_verified: '2026-09-18'
+  last_verified: '2026-09-21'
 description: 行列式展开定理、范德蒙行列式、相似对角化、实对称矩阵正交对角化与二次型合同变换全景公式推导速查。
 revisions:
   - date: '2024-07-01'

@@ -9,7 +9,7 @@ tags:
 lifecycle:
   status: evergreen
   confidence: 0.98
-  last_verified: '2026-09-18'
+  last_verified: '2026-09-21'
 description: 进程实体、PCB 核心管理、五态与七态调度状态机流转（含 SVG 高清图解）、ULT/KLT 线程模型与四大经典同步互斥问题详解。
 revisions:
   - date: '2024-09-10'
