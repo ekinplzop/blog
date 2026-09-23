@@ -10,7 +10,7 @@ tags:
 lifecycle:
   status: evergreen
   confidence: 0.98
-  last_verified: '2026-09-21'
+  last_verified: '2026-09-23'
 description: >-
   拒绝已死文本的静态陈列。本文深度拆解 Cognitive Kernel 的架构设计哲学：认识论状态机、Git 演进时光机与 Bret Victor
   反应式推演工程实现。

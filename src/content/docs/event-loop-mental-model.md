@@ -8,7 +8,7 @@ tags:
 lifecycle:
   status: evergreen
   confidence: 0.98
-  last_verified: '2026-09-21'
+  last_verified: '2026-09-23'
 description: 深入 ECMAScript 规范与 V8 引擎内核，剖析 Microtask 与 Macrotask 的物理调度差异与心智模型。
 revisions:
   - date: '2024-03-18'

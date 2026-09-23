@@ -8,7 +8,7 @@ tags:
 lifecycle:
   status: in-progress
   confidence: 0.85
-  last_verified: '2026-09-21'
+  last_verified: '2026-09-23'
 description: 探讨在非完全同步网络拓扑中，节点规模增长对最终一致性收敛速率与故障容忍阈值的衰减影响。
 revisions:
   - date: '2024-06-10'

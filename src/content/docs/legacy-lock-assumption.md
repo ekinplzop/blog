@@ -8,7 +8,7 @@ tags:
 lifecycle:
   status: superseded
   confidence: 0.25
-  last_verified: '2026-09-21'
+  last_verified: '2026-09-23'
 description: 早期探索分布式锁时的简易单点模型，已被证明在高并发场景下存在死锁雪崩隐患。
 revisions:
   - date: '2023-08-12'

@@ -1,13 +1,13 @@
 ---
 title: Pi 使用手册
-publishedDate: '2026-09-21'
+publishedDate: '2026-09-23'
 tags:
   - Obsidian
   - 速查
 lifecycle:
   status: seedling
   confidence: 0.65
-  last_verified: '2026-09-21'
+  last_verified: '2026-09-23'
 ---
 > 网页阅读版（右侧固定目录）：[Pi 使用手册.html](./Pi%20使用手册.html)
 
